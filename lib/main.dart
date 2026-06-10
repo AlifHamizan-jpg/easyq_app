@@ -25,8 +25,6 @@ class EasyQApp extends StatelessWidget {
         '/link-sent': (context) => const LinkSentPage(),
         '/dashboard': (context) => const DashboardPage(),
         '/cart': (context) => const CartPage(),
-        '/finance': (context) => const FinancePage(),
-        '/cafe-list': (context) => const CafeListPage(),
         '/profile': (context) => const UserProfilePage(),
         '/settings': (context) => const SettingsPage(),
         '/edit-profile': (context) => const EditProfilePage(),
@@ -40,9 +38,9 @@ class EasyQApp extends StatelessWidget {
   }
 }
 
-// ==================================================
+
 // MUKA 1: WELCOME
-// ==================================================
+
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
 
@@ -86,9 +84,9 @@ class WelcomePage extends StatelessWidget {
   }
 }
 
-// ==================================================
+
 // MUKA 2: LOGIN PILIHAN
-// ==================================================
+
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
@@ -371,9 +369,8 @@ class LinkSentPage extends StatelessWidget {
   }
 }
 
-// ==================================================
-// MUKA 7: DASHBOARD
-// ==================================================
+// Page 7: DASHBOARD- Alif Hamizan
+
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
@@ -384,6 +381,58 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   int _selectedIndex = 0;
 
+  // Senarai data kafe
+  final List<Map<String, dynamic>> cafeList = [
+    {
+      "name": "The Study Bistro - University Campus",
+      "tag": "20% off all meals",
+      "tagColor": Colors.green,
+      "rating": 4.9,
+      "distance": "100m",
+      "image": "assets/bistro.jpg",
+    },
+    {
+      "name": "Campus Grub",
+      "tag": "FREE DELIVERY",
+      "tagColor": Colors.red,
+      "rating": 4.7,
+      "distance": "50m",
+      "image": "assets/campus_grub.jpg",
+    },
+    {
+      "name": "Bubble Waffle Hub - Student Centre",
+      "tag": "Combo Deals",
+      "tagColor": Colors.orange,
+      "rating": 4.9,
+      "distance": "200m",
+      "image": "assets/waffle.jpg",
+    },
+    {
+      "name": "Pasta Project - University Walk",
+      "tag": "Student Discount",
+      "tagColor": Colors.blue,
+      "rating": 4.8,
+      "distance": "300m",
+      "image": "assets/pasta.jpg",
+    },
+    {
+      "name": "Energy Boost Cafe - Gym Complex",
+      "tag": "Fresh & Healthy",
+      "tagColor": Colors.green,
+      "rating": 4.6,
+      "distance": "150m",
+      "image": "assets/energy.jpg",
+    },
+    {
+      "name": "Asia Street Eats - Market Square",
+      "tag": "Weekend Special",
+      "tagColor": Colors.red,
+      "rating": 4.7,
+      "distance": "200m",
+      "image": "assets/asia.jpg",
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -393,7 +442,10 @@ class _DashboardPageState extends State<DashboardPage> {
         backgroundColor: const Color(0xFFD2B48C),
         elevation: 0,
         actions: [
-          const Text('Find Your Cafe', style: TextStyle(color: Colors.black)),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            child: Text('Find Your Cafe', style: TextStyle(color: Colors.black, fontSize: 16)),
+          ),
           IconButton(icon: const Icon(Icons.shopping_bag_outlined, color: Colors.black), onPressed: () => Navigator.pushNamed(context, '/cart')),
           IconButton(icon: const Icon(Icons.person_outline, color: Colors.black), onPressed: () => Navigator.pushNamed(context, '/profile')),
         ],
@@ -403,65 +455,177 @@ class _DashboardPageState extends State<DashboardPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Kotak Carian
             Container(
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
-              child: const TextField(decoration: InputDecoration(hintText: 'Search Cafe', prefixIcon: Icon(Icons.search), border: InputBorder.none)),
-            ),
-            const SizedBox(height: 15),
-            Container(
-              width: double.infinity,
-              height: 100,
-              decoration: BoxDecoration(color: Colors.amber, borderRadius: BorderRadius.circular(8)),
-              child: const Center(child: Text('BUY 1 GET 1 FREE', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18))),
-            ),
-            const SizedBox(height: 15),
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [Text('Finance'), Text('RM 99.20', style: TextStyle(fontWeight: FontWeight.bold))],
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+              child: const TextField(
+                decoration: InputDecoration(
+                  hintText: 'Search Cafe',
+                  prefixIcon: Icon(Icons.search, color: Colors.brown),
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(vertical: 14),
+                ),
               ),
             ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _cafeCard('The Study Bistro', '20% OFF', Colors.green),
-                _cafeCard('Campus Grub', 'FREE DELIVER', Colors.red),
-              ],
+            const SizedBox(height: 18),
+
+            // Banner Promo
+            Container(
+              width: double.infinity,
+              height: 120,
+              decoration: BoxDecoration(
+                color: Colors.amber.shade600,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)],
+              ),
+              child: const Center(
+                child: Text(
+                  'BUY 1 GET 1 FREE\nBOBA MILK TEA OFFER',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
+                ),
+              ),
+            ),
+            const SizedBox(height: 18),
+
+            // ✅ Kotak Wallet (boleh diklik)
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const WalletPage()),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 2)],
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Wallet', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                    Text('RM 99.20', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 22),
+
+            // Senarai 6 Kafe (2 bersebelahan)
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: cafeList.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 15,
+                mainAxisSpacing: 18,
+                childAspectRatio: 0.78,
+              ),
+              itemBuilder: (context, index) {
+                final cafe = cafeList[index];
+                return _cafeCard(
+                  name: cafe["name"],
+                  tag: cafe["tag"],
+                  tagColor: cafe["tagColor"],
+                  rating: cafe["rating"],
+                  distance: cafe["distance"],
+                  imagePath: cafe["image"],
+                );
+              },
             ),
           ],
         ),
       ),
+
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (i) {
           setState(() => _selectedIndex = i);
           if (i == 1) Navigator.pushNamed(context, '/cafe-list');
-          if (i == 2) Navigator.pushNamed(context, '/finance');
+          if (i == 2) Navigator.pushNamed(context, '/notifications');
         },
         backgroundColor: const Color(0xFFD2B48C),
         selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.black54,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.people_alt), label: 'Queue'),
-          BottomNavigationBarItem(icon: Icon(Icons.message), label: 'Messages'),
+          BottomNavigationBarItem(icon: Icon(Icons.home, size: 28), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.people_alt, size: 28), label: 'Queue'),
+          BottomNavigationBarItem(icon: Icon(Icons.notifications_outlined, size: 28), label: 'Notifications'),
         ],
       ),
     );
   }
 
-  Widget _cafeCard(String title, String tag, Color color) {
+  Widget _cafeCard({
+    required String name,
+    required String tag,
+    required Color tagColor,
+    required double rating,
+    required String distance,
+    required String imagePath,
+  }) {
     return Container(
-      width: 160,
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 3)],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(height: 60, color: color.withOpacity(0.2), child: const Center(child: Icon(Icons.restaurant, size: 40))),
-          Container(color: color, padding: const EdgeInsets.all(2), child: Text(tag, style: const TextStyle(color: Colors.white, fontSize: 10))),
-          Padding(padding: const EdgeInsets.all(5), child: Text(title, style: const TextStyle(fontWeight: FontWeight.bold))),
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                image: DecorationImage(
+                  image: AssetImage(imagePath),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: 8,
+                    left: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(color: tagColor, borderRadius: BorderRadius.circular(6)),
+                      child: Text(tag, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+                  const Positioned(top: 8, right: 8, child: Icon(Icons.favorite_border, color: Colors.white)),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 6),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12), maxLines: 2, overflow: TextOverflow.ellipsis),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    const Icon(Icons.star, color: Colors.amber, size: 14),
+                    const SizedBox(width: 3),
+                    Text(rating.toString(), style: const TextStyle(fontSize: 11)),
+                    const Spacer(),
+                    const Icon(Icons.location_on, size: 12, color: Colors.grey),
+                    const SizedBox(width: 2),
+                    Text(distance, style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
         ],
       ),
     );
@@ -481,7 +645,10 @@ class CartPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Your Cart', style: TextStyle(color: Colors.black)),
         backgroundColor: const Color(0xFFD2B48C),
-        leading: const Icon(Icons.arrow_back, color: Colors.black),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(15),
@@ -532,145 +699,159 @@ class CartPage extends StatelessWidget {
 }
 
 // ==================================================
-// MUKA 9: FINANCE
+// MUKA 9: WALLET (GANTI FINANCE)
 // ==================================================
-class FinancePage extends StatelessWidget {
-  const FinancePage({super.key});
+class WalletPage extends StatelessWidget {
+  const WalletPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFD2B48C),
+      backgroundColor: const Color(0xFFF5DEB3),
       appBar: AppBar(
-        title: const Text('Finance', style: TextStyle(color: Colors.black, fontSize: 22, fontWeight: FontWeight.bold)),
-        backgroundColor: const Color(0xFFD2B48C),
-        leading: const Icon(Icons.arrow_back, color: Colors.black),
+        title: const Text(
+          'Finance',
+          style: TextStyle(color: Colors.black, fontSize: 22, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: const Color(0xFFF5DEB3),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+        actions: const [
+          Padding(
+            padding: EdgeInsets.only(right: 12),
+            child: Icon(Icons.trending_up, color: Colors.black),
+          )
+        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('easyQPay Wallet', style: TextStyle(fontSize: 12)),
-            const SizedBox(height: 10),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(15),
-              decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(8)),
-              child: const Text('RM 99.20', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+            const Text(
+              'do more with your money with easyQFinance',
+              style: TextStyle(fontSize: 14, color: Colors.black87),
             ),
             const SizedBox(height: 20),
+
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _funcButton(Icons.arrow_upward, 'Top up'),
-                _funcButton(Icons.qr_code, 'Scan'),
-                _funcButton(Icons.send, 'Send'),
-                _funcButton(Icons.download, 'Receive'),
+                // Kad GX Account
+                Expanded(
+                  child: Container(
+                    height: 130,
+                    margin: const EdgeInsets.only(right: 8),
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF7B2CBF), Color(0xFF5A189A)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const [
+                            Text('Active', style: TextStyle(color: Colors.white70, fontSize: 13)),
+                            Icon(Icons.account_balance_wallet, color: Colors.white, size: 20),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        const Text('GX Account', style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(4)),
+                          child: const Text('NEW', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Kad easyQPay Wallet
+                Expanded(
+                  child: Container(
+                    height: 130,
+                    margin: const EdgeInsets.only(left: 8),
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF4CAF50),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('easyQPay Wallet', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 8),
+                        const Text('RM 99.20', style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
+                        const Spacer(),
+                        const Align(
+                          alignment: Alignment.bottomRight,
+                          child: Icon(Icons.savings, color: Colors.white, size: 32),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: 30),
-            const Text('Recent Transactions', style: TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            _transaction('LAKSA', 'RM 6.00'),
-            _transaction('ODEN', 'RM 18.00'),
-            _transaction('BOBA', 'RM 5.00'),
+
+            const SizedBox(height: 35),
+            const Text(
+              'Recent transactions -',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+
+            _transactionItem('LAKSA', 'RM 6.00'),
+            _transactionItem('ODEN X2', 'RM 18.00'),
+            _transactionItem('BOBA MILK TEA', 'RM 5.00'),
+            _transactionItem('ENERGY DRINK', 'RM 3.00'),
           ],
         ),
       ),
     );
   }
 
-  Widget _funcButton(IconData icon, String label) {
-    return Column(
-      children: [
-        Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4)), child: Icon(icon)),
-        const SizedBox(height: 4),
-        Text(label, style: const TextStyle(fontSize: 11)),
-      ],
-    );
-  }
-
-  Widget _transaction(String name, String amount) {
+  Widget _transactionItem(String title, String amount) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(color: Colors.white.withOpacity(0.5), borderRadius: BorderRadius.circular(4)),
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.6),
+        borderRadius: BorderRadius.circular(8),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [Text(name), Text(amount)],
-      ),
-    );
-  }
-}
-
-// ==================================================
-// MUKA 10: CAFE LIST
-// ==================================================
-class CafeListPage extends StatelessWidget {
-  const CafeListPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFD2B48C),
-      appBar: AppBar(
-        title: const Text('Cafe List', style: TextStyle(color: Colors.black)),
-        backgroundColor: const Color(0xFFD2B48C),
-        leading: const Icon(Icons.arrow_back, color: Colors.black),
-      ),
-      body: GridView.count(
-        padding: const EdgeInsets.all(15),
-        crossAxisCount: 2,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
         children: [
-          _cafeItem('The Studio Bistro', '20% OFF', Colors.green),
-          _cafeItem('Pasta Project', 'Student Discount', Colors.blue),
-          _cafeItem('Bubble Waffle', 'Combo Deals', Colors.orange),
-          _cafeItem('Asia Street', 'Weekend Special', Colors.red),
-        ],
-      ),
-    );
-  }
-
-  Widget _cafeItem(String title, String tag, Color tagColor) {
-    return Container(
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 60,
-            decoration: BoxDecoration(color: tagColor.withOpacity(0.2), borderRadius: const BorderRadius.vertical(top: Radius.circular(8))),
-            child: Stack(
-              children: [
-                const Center(child: Icon(Icons.restaurant, size: 40)),
-                Positioned(top: 5, left: 5, child: Container(color: tagColor, padding: const EdgeInsets.all(2), child: Text(tag, style: const TextStyle(color: Colors.white, fontSize: 10)))),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-                const Text('OPEN 8AM - 10PM', style: TextStyle(fontSize: 10)),
-                const SizedBox(height: 5),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [Text('RM 6.00'), Icon(Icons.add_circle, color: Color(0xFF00B4A0))],
+          Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                margin: const EdgeInsets.only(right: 10),
+                decoration: BoxDecoration(
+                  color: Colors.lightBlue.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(4),
                 ),
-              ],
-            ),
+                child: const Text('PAYMENT COMPLETED', style: TextStyle(fontSize: 10, color: Colors.blueAccent)),
+              ),
+              Text(amount, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+            ],
           ),
         ],
       ),
     );
   }
 }
-
 // ==================================================
 // MUKA 11: USER PROFILE
 // ==================================================
