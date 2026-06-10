@@ -33,6 +33,11 @@ class EasyQApp extends StatelessWidget {
         '/about-us': (context) => const AboutUsPage(),
         '/change-email': (context) => const ChangeEmailPage(),
         '/report-problem': (context) => const ReportProblemPage(),
+        '/cafe-detail': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+          return CafeDetailPage(cafeData: args);
+        },
+        '/wallet': (context) => const WalletPage(),
       },
     );
   }
@@ -384,20 +389,32 @@ class _DashboardPageState extends State<DashboardPage> {
   // Senarai data kafe
   final List<Map<String, dynamic>> cafeList = [
     {
-      "name": "The Study Bistro - University Campus",
+      "name": "The Studio Bistro - University Campus",
       "tag": "20% off all meals",
       "tagColor": Colors.green,
       "rating": 4.9,
       "distance": "100m",
-      "image": "assets/bistro.jpg",
+      "image": "https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=400&auto=format&fit=crop",
+      "isAd": false,
+      "hours": "9.00 A.M -10.00 P.M",
+      "promoBottom": "20% off all meals",
+      "recommendations": [
+        {"name": "SUSHI", "price": "RM 10.00", "image": "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=200&auto=format&fit=crop"},
+      ]
     },
     {
-      "name": "Campus Grub",
+      "name": "Campus Grub Quick & Easy",
       "tag": "FREE DELIVERY",
       "tagColor": Colors.red,
       "rating": 4.7,
       "distance": "50m",
-      "image": "assets/campus_grub.jpg",
+      "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=400&auto=format&fit=crop",
+      "isAd": true,
+      "hours": "9.00 A.M -10.30 P.M",
+      "promoBottom": "FREE DELIVERY",
+      "recommendations": [
+        {"name": "ODEN", "price": "RM 9.00", "image": "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?q=80&w=200&auto=format&fit=crop"},
+      ]
     },
     {
       "name": "Bubble Waffle Hub - Student Centre",
@@ -405,23 +422,42 @@ class _DashboardPageState extends State<DashboardPage> {
       "tagColor": Colors.orange,
       "rating": 4.9,
       "distance": "200m",
-      "image": "assets/waffle.jpg",
+      "image": "https://images.unsplash.com/photo-1574316071802-0d684efa7bf5?q=80&w=400&auto=format&fit=crop",
+      "isAd": false,
+      "hours": "9.00 A.M -10.00 P.M",
+      "promoBottom": "Combo Deals",
+      "recommendations": [
+        {"name": "WAFFLE", "price": "RM 6.00", "image": "https://images.unsplash.com/photo-1562376552-0d160a2f238d?q=80&w=200&auto=format&fit=crop"},
+        {"name": "BOBA MILK TEA", "price": "RM 6.00", "image": "https://images.unsplash.com/photo-1544259509-d050db90352b?q=80&w=200&auto=format&fit=crop"},
+      ]
     },
     {
-      "name": "Pasta Project - University Walk",
+      "name": "Pasta Project University Walk",
       "tag": "Student Discount",
       "tagColor": Colors.blue,
       "rating": 4.8,
       "distance": "300m",
-      "image": "assets/pasta.jpg",
+      "image": "https://images.unsplash.com/photo-1473093226795-af9932fe5856?q=80&w=400&auto=format&fit=crop",
+      "isAd": false,
+      "hours": "11.00 A.M -11.00 P.M",
+      "promoBottom": "Student Discount",
+      "recommendations": [
+        {"name": "PASTA", "price": "RM 6.00", "image": "https://images.unsplash.com/photo-1563379091339-03b21bc4a4f8?q=80&w=200&auto=format&fit=crop"},
+      ]
     },
     {
-      "name": "Energy Boost Cafe - Gym Complex",
+      "name": "Energy Boost Cafe Gym Complex",
       "tag": "Fresh & Healthy",
       "tagColor": Colors.green,
       "rating": 4.6,
       "distance": "150m",
-      "image": "assets/energy.jpg",
+      "image": "https://images.unsplash.com/photo-1622543953490-3b7bc367c427?q=80&w=400&auto=format&fit=crop",
+      "isAd": true,
+      "hours": "9.00 A.M -9.00 P.M",
+      "promoBottom": "Fresh & Healthy",
+      "recommendations": [
+        {"name": "ENERGY DRINK", "price": "RM 2.00", "image": "https://images.unsplash.com/photo-1622543953490-3b7bc367c427?q=80&w=200&auto=format&fit=crop"},
+      ]
     },
     {
       "name": "Asia Street Eats - Market Square",
@@ -429,7 +465,13 @@ class _DashboardPageState extends State<DashboardPage> {
       "tagColor": Colors.red,
       "rating": 4.7,
       "distance": "200m",
-      "image": "assets/asia.jpg",
+      "image": "https://images.unsplash.com/photo-1595103445524-817887308d27?q=80&w=400&auto=format&fit=crop",
+      "isAd": false,
+      "hours": "9.00 A.M -9.00 P.M",
+      "promoBottom": "Weekend Special",
+      "recommendations": [
+        {"name": "LAKSA", "price": "RM 6.00", "image": "https://images.unsplash.com/photo-1595103445524-817887308d27?q=80&w=400&auto=format&fit=crop"},
+      ]
     },
   ];
 
@@ -437,107 +479,163 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFD2B48C),
-      appBar: AppBar(
-        title: const Text('Home Dashboard', style: TextStyle(color: Colors.black)),
-        backgroundColor: const Color(0xFFD2B48C),
-        elevation: 0,
-        actions: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12),
-            child: Text('Find Your Cafe', style: TextStyle(color: Colors.black, fontSize: 16)),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // HEADER SECTION
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Find Your Cafe Shop\nanywhere',
+                    style: TextStyle(
+                      color: Color(0xFF6D4C41), // Adjusted to match the brown-ish tone in the image
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      _headerIconButton(Icons.shopping_cart_outlined, () => Navigator.pushNamed(context, '/cart')),
+                      const SizedBox(width: 8),
+                      _headerIconButton(Icons.person_outline, () => Navigator.pushNamed(context, '/profile')),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 18),
+
+              // SEARCH BAR
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Search Cafe',
+                          hintStyle: TextStyle(color: Colors.grey),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 14),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF5D4037),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.search, color: Colors.white),
+                      onPressed: () {},
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 18),
+
+              // PROMO SECTION
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF800080), // Purple from image
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Text('Promo', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic)),
+                  ),
+                  const SizedBox(height: 5),
+                  Container(
+                    width: double.infinity,
+                    height: 150,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF8E1),
+                      borderRadius: BorderRadius.circular(20),
+                      image: const DecorationImage(
+                        image: NetworkImage('https://img.freepik.com/free-vector/bubble-tea-advertisement-template_23-2148784318.jpg?t=st=1718040000~exp=1718043600~hmac=6b9b3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e&w=800'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        gradient: LinearGradient(
+                          colors: [Colors.black.withOpacity(0.1), Colors.transparent],
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 18),
+
+              // WALLET SECTION
+              GestureDetector(
+                onTap: () => Navigator.pushNamed(context, '/wallet'),
+                child: Container(
+                  width: 120,
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 2)],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Wallet', style: TextStyle(fontSize: 10, color: Colors.grey)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          Text('RM 99.20', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                          Icon(Icons.account_balance_wallet, size: 16, color: Colors.black87),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 22),
+
+              // CAFE LIST GRID
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: cafeList.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 15,
+                  mainAxisSpacing: 18,
+                  childAspectRatio: 0.75,
+                ),
+                itemBuilder: (context, index) {
+                  final cafe = cafeList[index];
+                  return _cafeCard(
+                    name: cafe["name"],
+                    tag: cafe["tag"],
+                    tagColor: cafe["tagColor"],
+                    rating: cafe["rating"],
+                    distance: cafe["distance"],
+                    imagePath: cafe["image"],
+                    isAd: cafe["isAd"],
+                    fullData: cafe,
+                  );
+                },
+              ),
+            ],
           ),
-          IconButton(icon: const Icon(Icons.shopping_bag_outlined, color: Colors.black), onPressed: () => Navigator.pushNamed(context, '/cart')),
-          IconButton(icon: const Icon(Icons.person_outline, color: Colors.black), onPressed: () => Navigator.pushNamed(context, '/profile')),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Kotak Carian
-            Container(
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
-              child: const TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search Cafe',
-                  prefixIcon: Icon(Icons.search, color: Colors.brown),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 14),
-                ),
-              ),
-            ),
-            const SizedBox(height: 18),
-
-            // Banner Promo
-            Container(
-              width: double.infinity,
-              height: 120,
-              decoration: BoxDecoration(
-                color: Colors.amber.shade600,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)],
-              ),
-              child: const Center(
-                child: Text(
-                  'BUY 1 GET 1 FREE\nBOBA MILK TEA OFFER',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
-                ),
-              ),
-            ),
-            const SizedBox(height: 18),
-
-            // ✅ Kotak Wallet (boleh diklik)
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const WalletPage()),
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 2)],
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Wallet', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                    Text('RM 99.20', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 22),
-
-            // Senarai 6 Kafe (2 bersebelahan)
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: cafeList.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 15,
-                mainAxisSpacing: 18,
-                childAspectRatio: 0.78,
-              ),
-              itemBuilder: (context, index) {
-                final cafe = cafeList[index];
-                return _cafeCard(
-                  name: cafe["name"],
-                  tag: cafe["tag"],
-                  tagColor: cafe["tagColor"],
-                  rating: cafe["rating"],
-                  distance: cafe["distance"],
-                  imagePath: cafe["image"],
-                );
-              },
-            ),
-          ],
         ),
       ),
 
@@ -567,66 +665,77 @@ class _DashboardPageState extends State<DashboardPage> {
     required double rating,
     required String distance,
     required String imagePath,
+    bool isAd = false,
+    required Map<String, dynamic> fullData,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 3)],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                image: DecorationImage(
-                  image: AssetImage(imagePath),
-                  fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, '/cafe-detail', arguments: fullData),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 3)],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
                 ),
-              ),
-              child: Stack(
-                children: [
-                  Positioned(
-                    top: 8,
-                    left: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(color: tagColor, borderRadius: BorderRadius.circular(6)),
-                      child: Text(tag, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                  child: Image.network(
+                    imagePath,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: Colors.grey.shade300,
+                      child: const Icon(Icons.broken_image, color: Colors.grey),
                     ),
                   ),
-                  const Positioned(top: 8, right: 8, child: Icon(Icons.favorite_border, color: Colors.white)),
+                ),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11), maxLines: 2, overflow: TextOverflow.ellipsis),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Icon(Icons.star, color: Colors.amber, size: 12),
+                      const SizedBox(width: 3),
+                      Text(rating.toString(), style: const TextStyle(fontSize: 10)),
+                      const Spacer(),
+                      const Icon(Icons.restaurant_menu, size: 12, color: Colors.grey),
+                      const SizedBox(width: 2),
+                      Text(distance, style: const TextStyle(fontSize: 10, color: Colors.grey)),
+                    ],
+                  ),
                 ],
               ),
             ),
-          ),
-          const SizedBox(height: 6),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12), maxLines: 2, overflow: TextOverflow.ellipsis),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    const Icon(Icons.star, color: Colors.amber, size: 14),
-                    const SizedBox(width: 3),
-                    Text(rating.toString(), style: const TextStyle(fontSize: 11)),
-                    const Spacer(),
-                    const Icon(Icons.location_on, size: 12, color: Colors.grey),
-                    const SizedBox(width: 2),
-                    Text(distance, style: const TextStyle(fontSize: 11, color: Colors.grey)),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-        ],
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _headerIconButton(IconData icon, VoidCallback onTap) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+      ),
+      child: IconButton(
+        icon: Icon(icon, color: Colors.black, size: 20),
+        onPressed: onTap,
       ),
     );
   }
@@ -642,37 +751,102 @@ class CartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFD2B48C),
-      appBar: AppBar(
-        title: const Text('Your Cart', style: TextStyle(color: Colors.black)),
-        backgroundColor: const Color(0xFFD2B48C),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
+      body: SafeArea(
         child: Column(
           children: [
-            _cartItem('BOBA MILK TEA', 'RM 6.00'),
-            _cartItem('ODEN', 'RM 14.40'),
-            _cartItem('SUSHI', 'RM 16.00'),
-            const Spacer(),
+            // HEADER
             Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [Text('Total'), Text('RM 60.40', style: TextStyle(fontWeight: FontWeight.bold))],
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+              decoration: const BoxDecoration(
+                color: Color(0xFFE5E0E0),
+                borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+              ),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.chevron_left, size: 30),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  const Expanded(
+                    child: Center(
+                      child: Text(
+                        'Your Cart',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF5D4037)),
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text('Edit', style: TextStyle(color: Colors.grey, fontSize: 16)),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 10),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.orange, padding: const EdgeInsets.symmetric(vertical: 12)),
-                child: const Text('CHECK OUT', style: TextStyle(fontSize: 16)),
+
+            // CART ITEMS LIST
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(15),
+                children: [
+                  _cartItem('BOBA MILK TEA', 'RM 6.00', 2, 'buy one get free one', 'https://images.unsplash.com/photo-1544259509-d050db90352b?q=80&w=200&auto=format&fit=crop'),
+                  _cartItem('ODEN', 'RM 14.40', 2, 'discount 40% on second order', 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?q=80&w=200&auto=format&fit=crop'),
+                  _cartItem('SUSHI', 'RM 16.00', 2, 'add-on deals at lower prices', 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=200&auto=format&fit=crop'),
+                  _cartItem('PASTA', 'RM 6.00', 1, 'add-on deals at lower prices', 'https://images.unsplash.com/photo-1473093226795-af9932fe5856?q=80&w=200&auto=format&fit=crop'),
+                  _cartItem('ENERGY DRINK', 'RM 6.00', 3, 'add-on deals at lower prices', 'https://images.unsplash.com/photo-1622543953490-3b7bc367c427?q=80&w=200&auto=format&fit=crop'),
+                  _cartItem('WAFFLE', 'RM 6.00', 1, 'add-on deals at lower prices', 'https://images.unsplash.com/photo-1574316071802-0d684efa7bf5?q=80&w=200&auto=format&fit=crop'),
+                  _cartItem('LAKSA', 'RM 6.00', 1, 'add-on deals at lower prices', 'https://images.unsplash.com/photo-1595103445524-817887308d27?q=80&w=200&auto=format&fit=crop'),
+                ],
+              ),
+            ),
+
+            // VOUCHER SECTION
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              color: const Color(0xFFF5F5F5),
+              child: Row(
+                children: [
+                  const Icon(Icons.confirmation_number_outlined, size: 24),
+                  const SizedBox(width: 10),
+                  const Text('Voucher / Discount', style: TextStyle(fontSize: 14)),
+                  const Spacer(),
+                  Text('select or enter code >', style: TextStyle(color: Colors.grey.shade400, fontSize: 12)),
+                ],
+              ),
+            ),
+
+            // FOOTER CHECKOUT
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                border: Border(top: BorderSide(color: Colors.black12)),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black26),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  const Text('All', style: TextStyle(fontSize: 14)),
+                  const Spacer(),
+                  const Text('RM 60.40', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange)),
+                  const SizedBox(width: 15),
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                    child: const Text('check out', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  ),
+                ],
               ),
             ),
           ],
@@ -681,17 +855,88 @@ class CartPage extends StatelessWidget {
     );
   }
 
-  Widget _cartItem(String name, String price) {
+  Widget _cartItem(String name, String price, int qty, String promo, String imagePath) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5),
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
-      child: Row(
+      margin: const EdgeInsets.only(bottom: 15),
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE5E0E0),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
         children: [
-          const Icon(Icons.local_cafe, size: 40),
-          const SizedBox(width: 10),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(name), Text(price, style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold))])),
-          const Row(children: [Icon(Icons.remove_circle_outline), Text('2'), Icon(Icons.add_circle_outline)]),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Container(
+                  width: 80,
+                  height: 80,
+                  color: Colors.white,
+                  child: Image.network(
+                    imagePath,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => const Icon(Icons.fastfood, size: 40, color: Colors.grey),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 15),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF5D4037))),
+                        const Text('Edit', style: TextStyle(color: Colors.black87, fontSize: 12, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                    const SizedBox(height: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(price, style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold, fontSize: 16)),
+                        ),
+                        Row(
+                          children: [
+                            const Icon(Icons.remove, size: 20),
+                            const SizedBox(width: 10),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.blue.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text('$qty', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                            ),
+                            const SizedBox(width: 10),
+                            const Icon(Icons.add, size: 20),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 15),
+          Row(
+            children: [
+              const Icon(Icons.shopping_bag_outlined, size: 18, color: Colors.orange),
+              const SizedBox(width: 8),
+              Expanded(child: Text(promo, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold))),
+              const Icon(Icons.chevron_right, size: 18),
+            ],
+          ),
         ],
       ),
     );
@@ -707,146 +952,185 @@ class WalletPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5DEB3),
-      appBar: AppBar(
-        title: const Text(
-          'Finance',
-          style: TextStyle(color: Colors.black, fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: const Color(0xFFF5DEB3),
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 12),
-            child: Icon(Icons.trending_up, color: Colors.black),
-          )
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'do more with your money with easyQFinance',
-              style: TextStyle(fontSize: 14, color: Colors.black87),
-            ),
-            const SizedBox(height: 20),
-
-            Row(
-              children: [
-                // Kad GX Account
-                Expanded(
-                  child: Container(
-                    height: 130,
-                    margin: const EdgeInsets.only(right: 8),
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF7B2CBF), Color(0xFF5A189A)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(12),
+      backgroundColor: const Color(0xFFD2B48C),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // HEADER
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: const BoxDecoration(
+                  color: Color(0xFFE5E0E0),
+                  borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.chevron_left, size: 30),
+                      onPressed: () => Navigator.pop(context),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
                     ),
-                    child: Column(
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: const [
-                            Text('Active', style: TextStyle(color: Colors.white70, fontSize: 13)),
-                            Icon(Icons.account_balance_wallet, color: Colors.white, size: 20),
+                            Text(
+                              'Wallet',
+                              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Color(0xFF5D4037)),
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              'do more with your money with\neasyQFinance',
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                            ),
                           ],
                         ),
-                        const SizedBox(height: 6),
-                        const Text('GX Account', style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                          decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(4)),
-                          child: const Text('NEW', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                        // Mimic graph and coins with icons
+                        Column(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Container(width: 10, height: 20, color: Colors.orange.shade300),
+                                const SizedBox(width: 4),
+                                Container(width: 10, height: 35, color: Colors.amber.shade400),
+                                const SizedBox(width: 4),
+                                Container(width: 10, height: 25, color: Colors.teal.shade700),
+                                const SizedBox(width: 4),
+                                const Icon(Icons.trending_up, color: Colors.teal, size: 40),
+                              ],
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ),
+                  ],
                 ),
+              ),
+              const SizedBox(height: 25),
 
-                // Kad easyQPay Wallet
-                Expanded(
-                  child: Container(
-                    height: 130,
-                    margin: const EdgeInsets.only(left: 8),
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF4CAF50),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text('easyQPay Wallet', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 8),
-                        const Text('RM 99.20', style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
-                        const Spacer(),
-                        const Align(
-                          alignment: Alignment.bottomRight,
-                          child: Icon(Icons.savings, color: Colors.white, size: 32),
+              // CARDS
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    // GX Account Card
+                    Expanded(
+                      child: Container(
+                        height: 200,
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF6A1B9A), Color(0xFF311B92)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                      ],
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('Active', style: TextStyle(color: Colors.white70, fontSize: 12)),
+                            const Text('GX Account', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 15),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(color: const Color(0xFFE91E63), borderRadius: BorderRadius.circular(4)),
+                              child: const Text('NEW', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                            ),
+                            const Spacer(),
+                            const Align(
+                              alignment: Alignment.topRight,
+                              child: Icon(Icons.account_balance, color: Colors.white38, size: 40),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 15),
+                    // easyQPay Wallet Card
+                    Expanded(
+                      child: Container(
+                        height: 200,
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF2E7D32),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('easyQPay Wallet', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 10),
+                            const Text('RM 99.20', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                            const Spacer(),
+                            const Align(
+                              alignment: Alignment.bottomRight,
+                              child: Icon(Icons.savings, color: Colors.white70, size: 60),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
 
-            const SizedBox(height: 35),
-            const Text(
-              'Recent transactions -',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 50),
 
-            _transactionItem('LAKSA', 'RM 6.00'),
-            _transactionItem('ODEN X2', 'RM 18.00'),
-            _transactionItem('BOBA MILK TEA', 'RM 5.00'),
-            _transactionItem('ENERGY DRINK', 'RM 3.00'),
-          ],
+              // TRANSACTIONS
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Recent transactions -',
+                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, fontFamily: 'monospace'),
+                    ),
+                    const SizedBox(height: 25),
+                    _transactionItem('LAKSA', 'RM 6.00'),
+                    _transactionItem('ODEN X2', 'RM 18.00'),
+                    _transactionItem('BOBA MILK TEA', 'RM 5.00'),
+                    _transactionItem('ENERGY DRINK', 'RM 3.00'),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _transactionItem(String title, String amount) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.6),
-        borderRadius: BorderRadius.circular(8),
-      ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                margin: const EdgeInsets.only(right: 10),
-                decoration: BoxDecoration(
-                  color: Colors.lightBlue.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: const Text('PAYMENT COMPLETED', style: TextStyle(fontSize: 10, color: Colors.blueAccent)),
-              ),
-              Text(amount, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-            ],
+          Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, fontFamily: 'monospace')),
+          const SizedBox(width: 10),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: const Color(0xFF64B5F6),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: const Text(
+              'PAYMENT COMPLETED',
+              style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+            ),
           ),
+          const Spacer(),
+          Text(amount, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, fontFamily: 'monospace')),
         ],
       ),
     );
@@ -906,7 +1190,6 @@ class UserProfilePage extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
-                // Gambar Profile Bulat dengan border nipis
                 Container(
                   width: 100,
                   height: 100,
@@ -914,8 +1197,12 @@ class UserProfilePage extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.black, width: 1),
                   ),
-                  child: const Center(
-                    child: Icon(Icons.person_outline, size: 60, color: Colors.black),
+                  child: ClipOval(
+                    child: Image.network(
+                      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop',
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => const Icon(Icons.person_outline, size: 60, color: Colors.black),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -968,9 +1255,9 @@ class UserProfilePage extends StatelessWidget {
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                     ),
                     const SizedBox(height: 20),
-                    _notificationCard('assets/waffle.jpg', 'Order received at 10.30 a.m'),
+                    _notificationCard('https://images.unsplash.com/photo-1574316071802-0d684efa7bf5?q=80&w=200&auto=format&fit=crop', 'Order received at 10.30 a.m'),
                     const SizedBox(height: 15),
-                    _notificationCard('assets/boba.jpg', 'Order received at 10.30 a.m'),
+                    _notificationCard('https://images.unsplash.com/photo-1544259509-d050db90352b?q=80&w=200&auto=format&fit=crop', 'Order received at 10.30 a.m'),
                     const SizedBox(height: 40),
                     // Footer
                     const Icon(Icons.info_outline, color: Colors.black87),
@@ -1005,7 +1292,7 @@ class UserProfilePage extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: Image.asset(
+            child: Image.network(
               imagePath,
               width: 60,
               height: 60,
@@ -1344,8 +1631,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.black, width: 1),
                     ),
-                    child: const Center(
-                      child: Icon(Icons.person_outline, size: 80, color: Colors.black),
+                    child: ClipOval(
+                      child: Image.network(
+                        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop',
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => const Icon(Icons.person_outline, size: 80, color: Colors.black),
+                      ),
                     ),
                   ),
                   Positioned(
@@ -2009,6 +2300,176 @@ class _ReportProblemPageState extends State<ReportProblemPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+// ==================================================
+// MUKA 19: CAFE DETAIL (Representative of Page 4/5)
+// ==================================================
+class CafeDetailPage extends StatelessWidget {
+  final Map<String, dynamic> cafeData;
+  const CafeDetailPage({super.key, required this.cafeData});
+
+  @override
+  Widget build(BuildContext context) {
+    final List<dynamic> recommendations = cafeData['recommendations'] ?? [];
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFD2B48C),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // HEADER IMAGE SECTION
+              Stack(
+                children: [
+                  Container(
+                    height: 250,
+                    width: double.infinity,
+                    child: Image.network(
+                      cafeData['image'] ?? 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=1000&auto=format&fit=crop',
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        color: Colors.grey.shade300,
+                        child: const Icon(Icons.broken_image, size: 50, color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                  // Floating Back Button
+                  Positioned(
+                    top: 15,
+                    left: 15,
+                    child: GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: const Icon(Icons.chevron_left, color: Colors.black, size: 35),
+                    ),
+                  ),
+                  // Top Promo Tag
+                  Positioned(
+                    top: 15,
+                    left: 50,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: cafeData['tagColor'] ?? Colors.green,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(cafeData['tag'] ?? 'Promo', style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+                  // Bottom Image Tag
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                      color: Colors.orange,
+                      child: Text(
+                        cafeData['promoBottom'] ?? 'Offer',
+                        style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              // CAFE NAME AND STATUS
+              Container(
+                margin: const EdgeInsets.all(15),
+                padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE5E0E0),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            cafeData['name'] ?? 'Cafe Name',
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF5D4037)),
+                          ),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                              decoration: BoxDecoration(color: const Color(0xFFFDECEC), borderRadius: BorderRadius.circular(4)),
+                              child: const Text('OPEN', style: TextStyle(color: Colors.black87, fontSize: 10, fontWeight: FontWeight.bold)),
+                            ),
+                            Text(cafeData['hours'] ?? '9.00 A.M - 10.00 P.M', textAlign: TextAlign.right, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    const Text('Recommend For You', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black87)),
+                    const SizedBox(height: 15),
+                    
+                    // RECOMMENDED ITEMS ROW
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: recommendations.map((item) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 15),
+                            child: _recommendedItem(item['name'], item['price'], item['image']),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+
+  Widget _recommendedItem(String name, String price, String imagePath) {
+    return Container(
+      width: 100,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        children: [
+          ClipOval(
+            child: Container(
+              width: 60,
+              height: 60,
+              color: Colors.grey.shade200,
+              child: Image.network(
+                imagePath,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => const Icon(Icons.fastfood, color: Colors.grey),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(name, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+          Text(price, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.orange)),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(4)),
+            child: const Icon(Icons.add, color: Colors.white, size: 16),
+          ),
+        ],
       ),
     );
   }
