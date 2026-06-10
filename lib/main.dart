@@ -861,51 +861,179 @@ class UserProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFEBCD),
+      backgroundColor: const Color(0xFFE5E0E0), // Background kelabu muda di atas
       appBar: AppBar(
-        title: const Text('User Profile', style: TextStyle(color: Colors.black)),
-        backgroundColor: const Color(0xFFFFEBCD),
-        leading: const Icon(Icons.arrow_back, color: Colors.black),
-        actions: [IconButton(icon: const Icon(Icons.settings, color: Colors.black), onPressed: () => Navigator.pushNamed(context, '/settings'))],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          children: [
-            const CircleAvatar(radius: 40, child: Icon(Icons.person, size: 40)),
-            const SizedBox(height: 10),
-            const Text('Nadzha', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            const Text('nadzhaa254@gmail.com', style: TextStyle(fontSize: 12)),
-            const SizedBox(height: 20),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(color: Colors.lightBlue, borderRadius: BorderRadius.circular(8)),
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('QUEUE SUMMARY', style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text('Current Status: In Queue'),
-                  Text('Last Visit: Cafeteria A'),
-                ],
-              ),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(color: Colors.lightBlue, borderRadius: BorderRadius.circular(8)),
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('ORDER HISTORY', style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text('Chicken Rice - Completed'),
-                  Text('Noodles - Completed'),
-                ],
-              ),
-            ),
-          ],
+        title: const Text(
+          'User Profile',
+          style: TextStyle(color: Color(0xFF6D5D5D), fontWeight: FontWeight.bold),
         ),
+        centerTitle: true,
+        backgroundColor: const Color(0xFFE5E0E0),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left, color: Colors.black, size: 30),
+          onPressed: () => Navigator.pop(context),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.tune, color: Colors.black),
+            onPressed: () => Navigator.pushNamed(context, '/settings'),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          // Bahagian Atas (Profile)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            color: const Color(0xFFE5E0E0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () => Navigator.pushNamed(context, '/edit-profile'),
+                      child: const Text(
+                        'Edit Profile',
+                        style: TextStyle(color: Colors.grey, fontSize: 13),
+                      ),
+                    ),
+                    const Text(
+                      '27/06/2007',
+                      style: TextStyle(color: Colors.grey, fontSize: 13),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                // Gambar Profile Bulat dengan border nipis
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.black, width: 1),
+                  ),
+                  child: const Center(
+                    child: Icon(Icons.person_outline, size: 60, color: Colors.black),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Ikon bendera (guna emoji atau icon)
+                    const Text('🇲🇾 ', style: TextStyle(fontSize: 18)),
+                    const Text(
+                      'Nadzha',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+                    ),
+                  ],
+                ),
+                const Text(
+                  'D24316942',
+                  style: TextStyle(fontSize: 14, color: Colors.black54),
+                ),
+                const SizedBox(height: 10),
+                // Pill untuk Email
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Text(
+                    'nadzhaa254@gmail.com',
+                    style: TextStyle(fontSize: 14, color: Colors.black87),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+          // Bahagian Bawah (Notifications)
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                color: Color(0xFFEAD6E8), // Warna ungu muda/pink
+                borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
+              ),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    const Text(
+                      'Notifications',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                    ),
+                    const SizedBox(height: 20),
+                    _notificationCard('assets/waffle.jpg', 'Order received at 10.30 a.m'),
+                    const SizedBox(height: 15),
+                    _notificationCard('assets/boba.jpg', 'Order received at 10.30 a.m'),
+                    const SizedBox(height: 40),
+                    // Footer
+                    const Icon(Icons.info_outline, color: Colors.black87),
+                    const SizedBox(height: 5),
+                    const Text(
+                      'ABOUT',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    const Text(
+                      'App Version: 1.0.0\nTerms & Privacy Policy',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 12, color: Colors.black54),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _notificationCard(String imagePath, String text) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF9C4), // Kuning lembut
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.asset(
+              imagePath,
+              width: 60,
+              height: 60,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                width: 60,
+                height: 60,
+                color: Colors.grey.shade300,
+                child: const Icon(Icons.fastfood),
+              ),
+            ),
+          ),
+          const SizedBox(width: 15),
+          Expanded(
+            child: RichText(
+              text: TextSpan(
+                style: const TextStyle(color: Colors.black, fontSize: 14),
+                children: [
+                  const TextSpan(text: 'Order received at '),
+                  TextSpan(
+                    text: text.split('at ').last,
+                    style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.orange),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -914,31 +1042,192 @@ class UserProfilePage extends StatelessWidget {
 // ==================================================
 // MUKA 12: SETTINGS
 // ==================================================
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  bool _newMenu = true;
+  bool _announcement = false;
+  bool _promo = true;
+  bool _highContrast = false;
+  String _language = "ENG";
+
+  void _showLanguageDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Select Language"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: const Text("English"),
+              onTap: () {
+                setState(() => _language = "ENG");
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text("Malay"),
+              onTap: () {
+                setState(() => _language = "MAL");
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showLogoutDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Log out", style: TextStyle(fontWeight: FontWeight.bold)),
+        content: const Text("Are you sure you want to log out?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel", style: TextStyle(color: Colors.black)),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Close dialog
+              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+            },
+            child: const Text("Log out", style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFEBCD),
+      backgroundColor: const Color(0xFFE5E0E0),
       appBar: AppBar(
-        title: const Text('Settings', style: TextStyle(color: Colors.black)),
-        backgroundColor: const Color(0xFFFFEBCD),
-        leading: const Icon(Icons.arrow_back, color: Colors.black),
+        title: const Text(
+          'Settings',
+          style: TextStyle(color: Color(0xFF6D5D5D), fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color(0xFFE5E0E0),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left, color: Colors.black, size: 30),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(15),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF3E5E5), // Light pinkish background
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ACCOUNT
+              const Text('Account', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
+              _settingsItem(Icons.lock_outline, 'Change Password', onTap: () => Navigator.pushNamed(context, '/change-password')),
+              _settingsItem(Icons.email_outlined, 'Change Email', onTap: () => Navigator.pushNamed(context, '/change-email')),
+
+              const SizedBox(height: 20),
+
+              // NOTIFICATION
+              const Text('Notification', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
+              _settingsSwitch(Icons.notifications_none, 'New Menu Available', _newMenu, (v) => setState(() => _newMenu = v)),
+              _settingsSwitch(Icons.notifications_none, 'Cafeteria Announcement', _announcement, (v) => setState(() => _announcement = v)),
+              _settingsSwitch(Icons.notifications_none, 'Promotions or Discount', _promo, (v) => setState(() => _promo = v)),
+
+              const SizedBox(height: 20),
+
+              // APPEARANCE
+              const Text('Appearance', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
+              _settingsSwitch(Icons.nightlight_outlined, 'High Contrast Mode', _highContrast, (v) => setState(() => _highContrast = v)),
+              _settingsItem(Icons.language, 'Language', trailingText: _language, onTap: _showLanguageDialog),
+
+              const SizedBox(height: 20),
+
+              // ABOUT APP
+              const Text('About App', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
+              _settingsItem(Icons.help_outline, 'About Us', onTap: () => Navigator.pushNamed(context, '/about-us')),
+              _settingsItem(Icons.help_outline, 'FAQ', onTap: () => Navigator.pushNamed(context, '/faq')),
+              _settingsItem(Icons.help_outline, 'Report A Problem', onTap: () => Navigator.pushNamed(context, '/report-problem')),
+
+              const SizedBox(height: 30),
+
+              // LOGOUT
+              Center(
+                child: TextButton.icon(
+                  onPressed: _showLogoutDialog,
+                  icon: const Icon(Icons.logout, color: Colors.red, size: 20),
+                  label: const Text('Log out', style: TextStyle(color: Colors.red, fontSize: 16)),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _settingsItem(IconData icon, String title, {String? trailingText, VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black, width: 0.8),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 22),
+            const SizedBox(width: 15),
+            Expanded(child: Text(title, style: const TextStyle(fontSize: 14))),
+            if (trailingText != null)
+              Text(trailingText, style: const TextStyle(color: Colors.grey, fontSize: 14))
+            else
+              const Icon(Icons.chevron_right, size: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _settingsSwitch(IconData icon, String title, bool value, ValueChanged<bool> onChanged) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black, width: 0.8),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
         children: [
-          const Text('Account', style: TextStyle(fontWeight: FontWeight.bold)),
-          ListTile(leading: const Icon(Icons.lock), title: const Text('Change Password'), onTap: () => Navigator.pushNamed(context, '/change-password')),
-          ListTile(leading: const Icon(Icons.email), title: const Text('Change Email'), onTap: () => Navigator.pushNamed(context, '/change-email')),
-          const SizedBox(height: 20),
-          const Text('About', style: TextStyle(fontWeight: FontWeight.bold)),
-          ListTile(leading: const Icon(Icons.info), title: const Text('About Us'), onTap: () => Navigator.pushNamed(context, '/about-us')),
-          ListTile(leading: const Icon(Icons.help), title: const Text('FAQ'), onTap: () => Navigator.pushNamed(context, '/faq')),
-          ListTile(leading: const Icon(Icons.bug_report), title: const Text('Report Problem'), onTap: () => Navigator.pushNamed(context, '/report-problem')),
-          const SizedBox(height: 20),
-          SizedBox(width: double.infinity, child: TextButton(onPressed: () => Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false), child: const Text('Log out', style: TextStyle(color: Colors.red)))),
+          Icon(icon, size: 22),
+          const SizedBox(width: 15),
+          Expanded(child: Text(title, style: const TextStyle(fontSize: 14))),
+          Switch(
+            value: value,
+            onChanged: onChanged,
+            activeThumbColor: Colors.grey,
+            activeTrackColor: Colors.black54,
+          ),
         ],
       ),
     );
@@ -948,40 +1237,224 @@ class SettingsPage extends StatelessWidget {
 // ==================================================
 // MUKA 13: EDIT PROFILE
 // ==================================================
-class EditProfilePage extends StatelessWidget {
+class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
+
+  @override
+  State<EditProfilePage> createState() => _EditProfilePageState();
+}
+
+class _EditProfilePageState extends State<EditProfilePage> {
+  final TextEditingController _nameController = TextEditingController(text: "Nad");
+  final TextEditingController _dobController = TextEditingController();
+  String _selectedCountry = "Malaysia";
+  String _selectedFlag = "🇲🇾";
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        _dobController.text = "${picked.day}/${picked.month}/${picked.year}";
+      });
+    }
+  }
+
+  void _showCountryPicker() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Select Country"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Text("🇲🇾"),
+              title: const Text("Malaysia"),
+              onTap: () {
+                setState(() {
+                  _selectedCountry = "Malaysia";
+                  _selectedFlag = "🇲🇾";
+                });
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Text("🇸🇬"),
+              title: const Text("Singapore"),
+              onTap: () {
+                setState(() {
+                  _selectedCountry = "Singapore";
+                  _selectedFlag = "🇸🇬";
+                });
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Text("🇮🇩"),
+              title: const Text("Indonesia"),
+              onTap: () {
+                setState(() {
+                  _selectedCountry = "Indonesia";
+                  _selectedFlag = "🇮🇩";
+                });
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFEBCD),
+      backgroundColor: const Color(0xFFE5E0E0),
       appBar: AppBar(
-        title: const Text('Edit Profile', style: TextStyle(color: Colors.black)),
-        backgroundColor: const Color(0xFFFFEBCD),
-        leading: const Icon(Icons.arrow_back, color: Colors.black),
+        title: const Text(
+          'Edit Profile',
+          style: TextStyle(color: Color(0xFF6D5D5D), fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color(0xFFE5E0E0),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left, color: Colors.black, size: 30),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Center(child: CircleAvatar(radius: 40, child: Icon(Icons.person, size: 40))),
-            const SizedBox(height: 30),
-            const Text('Name'),
-            const TextField(decoration: InputDecoration(hintText: 'Your Name')),
-            const SizedBox(height: 15),
-            const Text('Email'),
-            const TextField(decoration: InputDecoration(hintText: 'your@email.com')),
-            const SizedBox(height: 30),
+            // Profile Icon Section
+            Center(
+              child: Stack(
+                children: [
+                  Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.black, width: 1),
+                    ),
+                    child: const Center(
+                      child: Icon(Icons.person_outline, size: 80, color: Colors.black),
+                    ),
+                  ),
+                  Positioned(
+                    right: 5,
+                    top: 5,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE5E0E0),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.black, width: 1),
+                      ),
+                      child: const Icon(Icons.edit_note, size: 24, color: Colors.black),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 40),
+
+            // Name Field
+            const Text('Name', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+            const SizedBox(height: 10),
+            _buildTextField(_nameController, "Name"),
+
+            const SizedBox(height: 20),
+
+            // Date of Birth Field
+            const Text('Date of Birth', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+            const SizedBox(height: 10),
+            GestureDetector(
+              onTap: () => _selectDate(context),
+              child: AbsorbPointer(
+                child: _buildTextField(_dobController, "DD/MM/YYYY"),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Country Field
+            const Text('Country', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+            const SizedBox(height: 10),
+            GestureDetector(
+              onTap: _showCountryPicker,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(color: Colors.black45, width: 1),
+                ),
+                child: Row(
+                  children: [
+                    Text(_selectedFlag, style: const TextStyle(fontSize: 20)),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        _selectedCountry,
+                        style: const TextStyle(fontSize: 16, color: Colors.black54),
+                      ),
+                    ),
+                    const Icon(Icons.keyboard_arrow_down, color: Colors.black),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 50),
+
+            // Save Button
             SizedBox(
               width: double.infinity,
+              height: 55,
               child: ElevatedButton(
                 onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.lightBlue, padding: const EdgeInsets.symmetric(vertical: 12)),
-                child: const Text('Save'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF2196F3),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  elevation: 0,
+                ),
+                child: const Text(
+                  'Save And Continue',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String hint) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: const TextStyle(color: Colors.black26),
+        filled: true,
+        fillColor: Colors.white.withValues(alpha: 0.5),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(color: Colors.black45, width: 1),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(color: Colors.black45, width: 1),
         ),
       ),
     );
@@ -997,25 +1470,71 @@ class FAQPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFEBCD),
+      backgroundColor: const Color(0xFFE5E0E0),
       appBar: AppBar(
-        title: const Text('FAQ', style: TextStyle(color: Colors.black)),
-        backgroundColor: const Color(0xFFFFEBCD),
-        leading: const Icon(Icons.arrow_back, color: Colors.black),
-      ),
-      body: const Padding(
-        padding: EdgeInsets.all(15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Q: What is EasyQ?', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('A: App to queue and order food easily.'),
-            SizedBox(height: 15),
-            Text('Q: How to use?', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('A: Select cafe, join queue, order.'),
-          ],
+        title: const Text(
+          'FAQ',
+          style: TextStyle(color: Color(0xFF6D5D5D), fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color(0xFFE5E0E0),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left, color: Colors.black, size: 30),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF3E5E5),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _faqItem(
+                'Q1. What is EasyQ?',
+                'EasyQ is a cafeteria queue management app that helps users check queue status, place orders, and reduce waiting time at the cafeteria.',
+              ),
+              const Divider(height: 30),
+              _faqItem(
+                'Q2. How do I join a queue?',
+                'Select your preferred cafeteria and tap the "Join Queue" button. Your queue number and estimated waiting time will appear automatically.',
+              ),
+              const Divider(height: 30),
+              _faqItem(
+                'Q3. Can I order food before arriving',
+                'Yes. EasyQ allows users to pre-order food and pick it up when the order is ready.',
+              ),
+              const Divider(height: 30),
+              _faqItem(
+                'Q4. How do I know when my order is ready?',
+                'You will receive a notification once your order is prepared and ready for pickup.',
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _faqItem(String question, String answer) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          question,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          answer,
+          style: const TextStyle(fontSize: 14, color: Colors.black54, height: 1.4),
+        ),
+      ],
     );
   }
 }
@@ -1023,38 +1542,146 @@ class FAQPage extends StatelessWidget {
 // ==================================================
 // MUKA 15: CHANGE PASSWORD
 // ==================================================
-class ChangePasswordPage extends StatelessWidget {
+class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({super.key});
+
+  @override
+  State<ChangePasswordPage> createState() => _ChangePasswordPageState();
+}
+
+class _ChangePasswordPageState extends State<ChangePasswordPage> {
+  bool _oldPasswordVisible = false;
+  bool _newPasswordVisible = false;
+  bool _confirmPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFEBCD),
+      backgroundColor: const Color(0xFFFDECEC), // Light pinkish background
       appBar: AppBar(
-        title: const Text('Change Password', style: TextStyle(color: Colors.black)),
-        backgroundColor: const Color(0xFFFFEBCD),
-        leading: const Icon(Icons.arrow_back, color: Colors.black),
+        title: const Text(
+          'Change Password',
+          style: TextStyle(color: Color(0xFF6D5D5D), fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color(0xFFE5E0E0),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left, color: Colors.black, size: 30),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Old Password'),
-            const TextField(obscureText: true),
-            const SizedBox(height: 15),
-            const Text('New Password'),
-            const TextField(obscureText: true),
-            const SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.lightBlue, padding: const EdgeInsets.symmetric(vertical: 12)),
-                child: const Text('Update Password'),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(25),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: const Color(0xFFE5E0E0),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
               ),
-            ),
-          ],
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Change Password',
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 15),
+              const Text(
+                'your new password must be different from previous used passwords',
+                style: TextStyle(fontSize: 14, color: Colors.black87),
+              ),
+              const SizedBox(height: 30),
+
+              // Old Password
+              const Text('Old Password', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+              const SizedBox(height: 8),
+              _buildPasswordField(
+                obscureText: !_oldPasswordVisible,
+                onToggle: () => setState(() => _oldPasswordVisible = !_oldPasswordVisible),
+              ),
+              const SizedBox(height: 20),
+
+              // New Password
+              const Text('New Password', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+              const SizedBox(height: 8),
+              _buildPasswordField(
+                obscureText: !_newPasswordVisible,
+                onToggle: () => setState(() => _newPasswordVisible = !_newPasswordVisible),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(top: 4, left: 4),
+                child: Text('• Must be at least 8 characters.', style: TextStyle(fontSize: 12, color: Colors.black54)),
+              ),
+              const SizedBox(height: 20),
+
+              // Confirm Password
+              const Text('Confirm Password', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+              const SizedBox(height: 8),
+              _buildPasswordField(
+                obscureText: !_confirmPasswordVisible,
+                onToggle: () => setState(() => _confirmPasswordVisible = !_confirmPasswordVisible),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(top: 4, left: 4),
+                child: Text('• Both passwords must match.', style: TextStyle(fontSize: 12, color: Colors.black54)),
+              ),
+              const SizedBox(height: 40),
+
+              // Reset Password Button
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2196F3),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    elevation: 0,
+                  ),
+                  child: const Text(
+                    'Reset Password',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPasswordField({required bool obscureText, required VoidCallback onToggle}) {
+    return TextField(
+      obscureText: obscureText,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+        suffixIcon: IconButton(
+          icon: Icon(
+            obscureText ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+            color: Colors.black,
+            size: 20,
+          ),
+          onPressed: onToggle,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.black45),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.black45),
         ),
       ),
     );
@@ -1070,25 +1697,76 @@ class AboutUsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFEBCD),
+      backgroundColor: const Color(0xFFE5E0E0),
       appBar: AppBar(
-        title: const Text('About Us', style: TextStyle(color: Colors.black)),
-        backgroundColor: const Color(0xFFFFEBCD),
-        leading: const Icon(Icons.arrow_back, color: Colors.black),
-      ),
-      body: const Padding(
-        padding: EdgeInsets.all(15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('EasyQ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-            SizedBox(height: 10),
-            Text('EasyQ helps you skip long lines and order food easily from campus cafes.'),
-            SizedBox(height: 20),
-            Text('Version: 1.0.0'),
-          ],
+        title: const Text(
+          'About Us',
+          style: TextStyle(color: Color(0xFF6D5D5D), fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color(0xFFE5E0E0),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left, color: Colors.black, size: 30),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(25),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF3E5E5),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            children: [
+              RichText(
+                text: const TextSpan(
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                  children: [
+                    TextSpan(text: 'About '),
+                    TextSpan(text: 'EasyQ', style: TextStyle(color: Color(0xFFE91E63))),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 30),
+              const Text(
+                'EasyQ is a smart cafeteria queue management application designed to make food ordering faster, easier, and more organized for students and customers. The app helps users avoid long waiting lines by allowing them to view menus, place orders, and monitor queue status directly from their mobile devices.\n\nEasyQ aims to create a more efficient, convenient, and modern food ordering system for both customers and cafeteria staff.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14, color: Colors.black54, height: 1.5),
+              ),
+              const SizedBox(height: 40),
+              const Text(
+                'Our Platform:',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 25),
+              _platformItem(Icons.music_note, 'EasyQ67z'),
+              const SizedBox(height: 15),
+              _platformItem(Icons.camera_alt_outlined, 'EasyQ67z'),
+              const SizedBox(height: 15),
+              _platformItem(Icons.language, 'www.EasyQ.com'),
+              const SizedBox(height: 30),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _platformItem(IconData icon, String text) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, size: 30),
+        const SizedBox(width: 15),
+        Text(
+          text,
+          style: const TextStyle(fontSize: 16, color: Colors.black87),
+        ),
+      ],
     );
   }
 }
@@ -1102,29 +1780,102 @@ class ChangeEmailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFEBCD),
+      backgroundColor: const Color(0xFFFDECEC), // Light pinkish background
       appBar: AppBar(
-        title: const Text('Change Email', style: TextStyle(color: Colors.black)),
-        backgroundColor: const Color(0xFFFFEBCD),
-        leading: const Icon(Icons.arrow_back, color: Colors.black),
+        title: const Text(
+          'Change Email',
+          style: TextStyle(color: Color(0xFF6D5D5D), fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color(0xFFE5E0E0),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left, color: Colors.black, size: 30),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('New Email Address'),
-            const TextField(decoration: InputDecoration(hintText: 'new@email.com')),
-            const SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.lightBlue, padding: const EdgeInsets.symmetric(vertical: 12)),
-                child: const Text('Save Email'),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(25),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: const Color(0xFFE5E0E0),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
               ),
-            ),
-          ],
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Change Email',
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 30),
+
+              // Old Email
+              const Text('Old Email', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+              const SizedBox(height: 8),
+              _buildEmailField(),
+              const SizedBox(height: 20),
+
+              // New Email
+              const Text('New Email', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+              const SizedBox(height: 8),
+              _buildEmailField(),
+              const SizedBox(height: 20),
+
+              // Confirm New Email
+              const Text('Confirm New Email', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+              const SizedBox(height: 8),
+              _buildEmailField(),
+              const SizedBox(height: 60),
+
+              // Change Email Button
+              Center(
+                child: SizedBox(
+                  width: 250,
+                  height: 45,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2196F3),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                      elevation: 0,
+                    ),
+                    child: const Text(
+                      'Change Email',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmailField() {
+    return TextField(
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(color: Colors.black45),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(color: Colors.black45),
         ),
       ),
     );
@@ -1134,39 +1885,129 @@ class ChangeEmailPage extends StatelessWidget {
 // ==================================================
 // MUKA 18: REPORT PROBLEM
 // ==================================================
-class ReportProblemPage extends StatelessWidget {
+class ReportProblemPage extends StatefulWidget {
   const ReportProblemPage({super.key});
+
+  @override
+  State<ReportProblemPage> createState() => _ReportProblemPageState();
+}
+
+class _ReportProblemPageState extends State<ReportProblemPage> {
+  bool _hasAttachment = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFEBCD),
+      backgroundColor: const Color(0xFFE5E0E0),
       appBar: AppBar(
-        title: const Text('Report Problem', style: TextStyle(color: Colors.black)),
-        backgroundColor: const Color(0xFFFFEBCD),
-        leading: const Icon(Icons.arrow_back, color: Colors.black),
+        title: const Text(
+          'Report A Problem',
+          style: TextStyle(color: Color(0xFF6D5D5D), fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color(0xFFE5E0E0),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left, color: Colors.black, size: 30),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          children: [
-            const TextField(
-              maxLines: 5,
-              decoration: InputDecoration(
-                hintText: 'Describe your problem here...',
-                border: OutlineInputBorder(),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFDECEC),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.black26),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
               ),
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red, padding: const EdgeInsets.symmetric(vertical: 12)),
-                child: const Text('Submit Report'),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Describe the problem you have encountered. Specific details are encouraged.',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-            ),
-          ],
+              const SizedBox(height: 25),
+              TextField(
+                maxLines: 10,
+                decoration: InputDecoration(
+                  hintText: '(Apps buggy, payment doesn’t work, system doesn’t respond, etc.)',
+                  hintStyle: const TextStyle(color: Colors.black26, fontSize: 14),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(color: Colors.black45),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(color: Colors.black45),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Image Preview Placeholder
+                  Container(
+                    width: 100,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: _hasAttachment ? Colors.grey.shade300 : Colors.transparent,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: _hasAttachment
+                        ? const Center(child: Icon(Icons.image, color: Colors.black45))
+                        : null,
+                  ),
+                  // Attach file button
+                  OutlinedButton.icon(
+                    onPressed: () => setState(() => _hasAttachment = !_hasAttachment),
+                    icon: const Icon(Icons.attach_file, color: Colors.black45, size: 20),
+                    label: const Text('Attach file', style: TextStyle(color: Colors.black45)),
+                    style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      side: const BorderSide(color: Colors.black26),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 40),
+              Center(
+                child: const Text(
+                  '• Your feedback mean alot to us!',
+                  style: TextStyle(color: Colors.black45, fontSize: 13),
+                ),
+              ),
+              const SizedBox(height: 15),
+              SizedBox(
+                width: double.infinity,
+                height: 55,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2196F3),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                    elevation: 0,
+                  ),
+                  child: const Text(
+                    'Submit',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
