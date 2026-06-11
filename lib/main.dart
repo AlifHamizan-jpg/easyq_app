@@ -506,6 +506,8 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   int _selectedIndex = 0;
+  final TextEditingController _searchController = TextEditingController();
+  late List<Map<String, dynamic>> _filteredCafeList;
 
   // Senarai data kafe
   final List<Map<String, dynamic>> cafeList = [
@@ -597,6 +599,31 @@ class _DashboardPageState extends State<DashboardPage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _filteredCafeList = List.from(cafeList);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _filterCafes(String query) {
+    setState(() {
+      if (query.isEmpty) {
+        _filteredCafeList = List.from(cafeList);
+      } else {
+        _filteredCafeList = cafeList
+            .where((cafe) =>
+                cafe["name"].toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFD2B48C),
@@ -638,8 +665,10 @@ class _DashboardPageState extends State<DashboardPage> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const TextField(
-                        decoration: InputDecoration(
+                      child: TextField(
+                        controller: _searchController,
+                        onChanged: _filterCafes,
+                        decoration: const InputDecoration(
                           hintText: 'Search Cafe',
                           hintStyle: TextStyle(color: Colors.grey),
                           border: InputBorder.none,
@@ -765,7 +794,7 @@ class _DashboardPageState extends State<DashboardPage> {
               GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: cafeList.length,
+                itemCount: _filteredCafeList.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 15,
@@ -773,7 +802,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   childAspectRatio: 0.75,
                 ),
                 itemBuilder: (context, index) {
-                  final cafe = cafeList[index];
+                  final cafe = _filteredCafeList[index];
                   return _cafeCard(
                     name: cafe["name"],
                     tag: cafe["tag"],
@@ -956,6 +985,7 @@ class CartPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFD2B48C),
       body: SafeArea(
+        bottom: false,
         child: Column(
           children: [
             // HEADER
@@ -1193,43 +1223,23 @@ class WalletPage extends StatelessWidget {
                       constraints: const BoxConstraints(),
                     ),
                     const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text(
-                              'Wallet',
-                              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Color(0xFF5D4037)),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              'do more with your money with\neasyQFinance',
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        // Mimic graph and coins with icons
-                        Column(
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Container(width: 10, height: 20, color: Colors.orange.shade300),
-                                const SizedBox(width: 4),
-                                Container(width: 10, height: 35, color: Colors.amber.shade400),
-                                const SizedBox(width: 4),
-                                Container(width: 10, height: 25, color: Colors.teal.shade700),
-                                const SizedBox(width: 4),
-                                const Icon(Icons.trending_up, color: Colors.teal, size: 40),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
+                    Center(
+                      child: Column(
+                        children: const [
+                          Text(
+                            'Wallet',
+                            style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Color(0xFF5D4037)),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            'do more with your money with\neasyQFinance',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ),
+                    // Removed static icons for centered layout
                   ],
                 ),
               ),
@@ -1315,10 +1325,12 @@ class WalletPage extends StatelessWidget {
                       style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, fontFamily: 'monospace'),
                     ),
                     const SizedBox(height: 25),
-                    _transactionItem('LAKSA', 'RM 6.00'),
-                    _transactionItem('ODEN X2', 'RM 18.00'),
-                    _transactionItem('BOBA MILK TEA', 'RM 5.00'),
-                    _transactionItem('ENERGY DRINK', 'RM 3.00'),
+                    const Center(
+                      child: Text(
+                        'No transactions yet',
+                        style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -3777,7 +3789,9 @@ class QueueProgressPage extends StatelessWidget {
             Navigator.pushNamedAndRemoveUntil(context, "/dashboard", (route) => false);
           }),
           _navItem(Icons.group, "Queue", activeIndex == 1, () {}),
-          _navItem(Icons.notifications_none, "Notification", activeIndex == 2, () {}),
+          _navItem(Icons.notifications_none, "Notification", activeIndex == 2, () {
+            Navigator.pushNamed(context, '/notifications');
+          }),
         ],
       ),
     );
