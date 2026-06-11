@@ -1,5 +1,25 @@
 ﻿import 'package:flutter/material.dart';
 
+class CartItem {
+  final String name;
+  final String price;
+  int quantity;
+  final String image;
+  final String cafeName;
+
+  CartItem({
+    required this.name,
+    required this.price,
+    this.quantity = 1,
+    required this.image,
+    required this.cafeName,
+  });
+
+  double get priceValue {
+    return double.tryParse(price.replaceAll('RM ', '')) ?? 0.0;
+  }
+}
+
 void main() {
   runApp(const EasyQApp());
 }
@@ -17,6 +37,7 @@ class _EasyQAppState extends State<EasyQApp> {
   String _userFlag = "🇲🇾";
   String _userEmail = "nadzhaa254@gmail.com";
   String? _userProfileImage;
+  List<CartItem> _cartItems = [];
 
   void _updateProfile(String name, String dob, String flag, String? image) {
     setState(() {
@@ -30,6 +51,40 @@ class _EasyQAppState extends State<EasyQApp> {
   void _updateEmail(String newEmail) {
     setState(() {
       _userEmail = newEmail;
+    });
+  }
+
+  void _addToCart(Map<String, dynamic> item, String cafeName) {
+    setState(() {
+      final index = _cartItems.indexWhere((element) => element.name == item['name']);
+      if (index >= 0) {
+        _cartItems[index].quantity++;
+      } else {
+        _cartItems.add(CartItem(
+          name: item['name'],
+          price: item['price'],
+          image: item['image'],
+          cafeName: cafeName,
+        ));
+      }
+    });
+  }
+
+  void _updateQuantity(String itemName, int delta) {
+    setState(() {
+      final index = _cartItems.indexWhere((element) => element.name == itemName);
+      if (index >= 0) {
+        _cartItems[index].quantity += delta;
+        if (_cartItems[index].quantity <= 0) {
+          _cartItems.removeAt(index);
+        }
+      }
+    });
+  }
+
+  void _clearCart() {
+    setState(() {
+      _cartItems = [];
     });
   }
 
@@ -50,7 +105,10 @@ class _EasyQAppState extends State<EasyQApp> {
         '/reset-password': (context) => const PasswordResetPage(),
         '/link-sent': (context) => const LinkSentPage(),
         '/dashboard': (context) => const DashboardPage(),
-        '/cart': (context) => const CartPage(),
+        '/cart': (context) => CartPage(
+              cartItems: _cartItems,
+              onUpdateQuantity: _updateQuantity,
+            ),
         '/profile': (context) => UserProfilePage(
               userName: _userName,
               userDOB: _userDOB,
@@ -76,17 +134,28 @@ class _EasyQAppState extends State<EasyQApp> {
         '/report-problem': (context) => const ReportProblemPage(),
         '/cafe-detail': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-          return CafeDetailPage(cafeData: args);
+          return CafeDetailPage(
+            cafeData: args,
+            onAddToCart: (item) => _addToCart(item, args['name'] ?? 'Cafe'),
+          );
         },
         '/wallet': (context) => const WalletPage(),
-        '/order-summary': (context) => const OrderSummaryPage(),
+        '/order-summary': (context) => OrderSummaryPage(
+              cartItems: _cartItems,
+            ),
         '/checkout': (context) {
           final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
           final isPayAtCounter = args?['isPayAtCounter'] ?? false;
+          if (isPayAtCounter || args?['isSuccess'] == true) {
+            // Keep items for receipt, clear after viewing receipt if needed
+            // But usually we clear after checkout is confirmed
+          }
           return CheckoutPage(isPayAtCounter: isPayAtCounter);
         },
         '/payment': (context) => const PaymentPage(),
-        '/order-receipt': (context) => const OrderReceiptPage(),
+        '/order-receipt': (context) => OrderReceiptPage(
+              cartItems: List.from(_cartItems), // Snapshot for receipt
+            ),
         '/pickup-counter': (context) => const PickupCounterPage(),
         '/queue-progress': (context) => const QueueProgressPage(),
         '/notifications': (context) => const NotificationPage(),
@@ -869,7 +938,18 @@ class _DashboardPageState extends State<DashboardPage> {
 // MUKA 8: CART
 // ==================================================
 class CartPage extends StatelessWidget {
-  const CartPage({super.key});
+  final List<CartItem> cartItems;
+  final Function(String, int) onUpdateQuantity;
+
+  const CartPage({
+    super.key,
+    required this.cartItems,
+    required this.onUpdateQuantity,
+  });
+
+  double get totalPrice {
+    return cartItems.fold(0, (sum, item) => sum + (item.priceValue * item.quantity));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -909,18 +989,23 @@ class CartPage extends StatelessWidget {
 
             // CART ITEMS LIST
             Expanded(
-              child: ListView(
-                padding: const EdgeInsets.all(15),
-                children: [
-                  _cartItem('BOBA MILK TEA', 'RM 6.00', 2, 'buy one get free one', 'assets/images/brown_sugar_boba.jpeg'),
-                  _cartItem('ODEN', 'RM 14.40', 2, 'discount 40% on second order', 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?q=80&w=200&auto=format&fit=crop'),
-                  _cartItem('SUSHI', 'RM 16.00', 2, 'add-on deals at lower prices', 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=200&auto=format&fit=crop'),
-                  _cartItem('PASTA', 'RM 6.00', 1, 'add-on deals at lower prices', 'https://images.unsplash.com/photo-1473093226795-af9932fe5856?q=80&w=200&auto=format&fit=crop'),
-                  _cartItem('ENERGY DRINK', 'RM 6.00', 3, 'add-on deals at lower prices', 'assets/images/red_bull.jpeg'),
-                  _cartItem('WAFFLE', 'RM 6.00', 1, 'add-on deals at lower prices', 'assets/images/bubble_waffle_hub.jpeg'),
-                  _cartItem('LAKSA', 'RM 6.00', 1, 'add-on deals at lower prices', 'assets/images/laksa.jpeg'),
-                ],
-              ),
+              child: cartItems.isEmpty
+                  ? const Center(child: Text("Your cart is empty", style: TextStyle(fontSize: 18, color: Colors.grey)))
+                  : ListView.builder(
+                      padding: const EdgeInsets.all(15),
+                      itemCount: cartItems.length,
+                      itemBuilder: (context, index) {
+                        final item = cartItems[index];
+                        return _cartItem(
+                          context,
+                          item.name,
+                          item.price,
+                          item.quantity,
+                          item.name == 'BOBA MILK TEA' ? 'buy one get free one' : 'add-on deals at lower prices',
+                          item.image,
+                        );
+                      },
+                    ),
             ),
 
             // VOUCHER SECTION
@@ -958,10 +1043,13 @@ class CartPage extends StatelessWidget {
                   const SizedBox(width: 8),
                   const Text('All', style: TextStyle(fontSize: 14)),
                   const Spacer(),
-                  const Text('RM 60.40', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange)),
+                  Text(
+                    'RM ${totalPrice.toStringAsFixed(2)}',
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange),
+                  ),
                   const SizedBox(width: 15),
                   ElevatedButton(
-                    onPressed: () => Navigator.pushNamed(context, '/order-summary'),
+                    onPressed: cartItems.isEmpty ? null : () => Navigator.pushNamed(context, '/order-summary'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange,
                       foregroundColor: Colors.white,
@@ -979,7 +1067,7 @@ class CartPage extends StatelessWidget {
     );
   }
 
-  Widget _cartItem(String name, String price, int qty, String promo, String imagePath) {
+  Widget _cartItem(BuildContext context, String name, String price, int qty, String promo, String imagePath) {
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
       padding: const EdgeInsets.all(15),
@@ -1031,7 +1119,10 @@ class CartPage extends StatelessWidget {
                         ),
                         Row(
                           children: [
-                            const Icon(Icons.remove, size: 20),
+                            GestureDetector(
+                              onTap: () => onUpdateQuantity(name, -1),
+                              child: const Icon(Icons.remove, size: 20),
+                            ),
                             const SizedBox(width: 10),
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -1042,7 +1133,10 @@ class CartPage extends StatelessWidget {
                               child: Text('$qty', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                             ),
                             const SizedBox(width: 10),
-                            const Icon(Icons.add, size: 20),
+                            GestureDetector(
+                              onTap: () => onUpdateQuantity(name, 1),
+                              child: const Icon(Icons.add, size: 20),
+                            ),
                           ],
                         ),
                       ],
@@ -2619,7 +2713,13 @@ class _ReportProblemPageState extends State<ReportProblemPage> {
 // ==================================================
 class CafeDetailPage extends StatelessWidget {
   final Map<String, dynamic> cafeData;
-  const CafeDetailPage({super.key, required this.cafeData});
+  final Function(Map<String, dynamic>) onAddToCart;
+
+  const CafeDetailPage({
+    super.key,
+    required this.cafeData,
+    required this.onAddToCart,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -2642,9 +2742,9 @@ class CafeDetailPage extends StatelessWidget {
                         ? Image.asset(
                             cafeData['image'],
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) => Container(
-                              color: Colors.grey.shade300,
-                              child: const Icon(Icons.broken_image, size: 50, color: Colors.grey),
+                            errorBuilder: (context, error, stackTrace) => const SizedBox(
+                              height: 50,
+                              child: Icon(Icons.broken_image, size: 50, color: Colors.grey),
                             ),
                           )
                         : Image.network(
@@ -2740,7 +2840,7 @@ class CafeDetailPage extends StatelessWidget {
                         children: recommendations.map((item) {
                           return Padding(
                             padding: const EdgeInsets.only(right: 15),
-                            child: _recommendedItem(item['name'], item['price'], item['image']),
+                            child: _recommendedItem(context, item['name'], item['price'], item['image']),
                           );
                         }).toList(),
                       ),
@@ -2756,7 +2856,7 @@ class CafeDetailPage extends StatelessWidget {
   }
 
 
-  Widget _recommendedItem(String name, String price, String imagePath) {
+  Widget _recommendedItem(BuildContext context, String name, String price, String imagePath) {
     return Container(
       width: 100,
       padding: const EdgeInsets.all(10),
@@ -2788,10 +2888,22 @@ class CafeDetailPage extends StatelessWidget {
           Text(name, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
           Text(price, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.orange)),
           const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(4)),
-            child: const Icon(Icons.add, color: Colors.white, size: 16),
+          GestureDetector(
+            onTap: () {
+              onAddToCart({
+                'name': name,
+                'price': price,
+                'image': imagePath,
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('$name added to cart!'), duration: const Duration(seconds: 1)),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(4)),
+              child: const Icon(Icons.add, color: Colors.white, size: 16),
+            ),
           ),
         ],
       ),
@@ -2804,7 +2916,8 @@ class CafeDetailPage extends StatelessWidget {
 // MUKA: ORDER SUMMARY
 // ==================================================
 class OrderSummaryPage extends StatefulWidget {
-  const OrderSummaryPage({super.key});
+  final List<CartItem> cartItems;
+  const OrderSummaryPage({super.key, required this.cartItems});
 
   @override
   State<OrderSummaryPage> createState() => _OrderSummaryPageState();
@@ -2857,26 +2970,27 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                     
                     // Items List
                     Expanded(
-                      child: ListView(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        children: [
-                          _orderItem(
-                            "WAFFLE",
-                            "Bubble Waffle\nHub - Student\nCenter",
-                            "RM 10.00",
-                            "1",
-                            "assets/images/bubble_waffle_hub.jpeg",
-                           ),
-                          const Divider(color: Colors.black26),
-                          _orderItem(
-                            "PASTA",
-                            "Pasta Project -\nUniversity Walk",
-                            "RM 6.00",
-                            "1",
-                            "https://images.unsplash.com/photo-1473093226795-af9932fe5856?q=80&w=200&auto=format&fit=crop",
-                          ),
-                        ],
-                      ),
+                      child: widget.cartItems.isEmpty
+                          ? const Center(child: Text("No items to display"))
+                          : ListView.builder(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              itemCount: widget.cartItems.length,
+                              itemBuilder: (context, index) {
+                                final item = widget.cartItems[index];
+                                return Column(
+                                  children: [
+                                    _orderItem(
+                                      item.name,
+                                      item.cafeName,
+                                      item.price,
+                                      item.quantity.toString(),
+                                      item.image,
+                                    ),
+                                    if (index < widget.cartItems.length - 1) const Divider(color: Colors.black26),
+                                  ],
+                                );
+                              },
+                            ),
                     ),
                     
                     // Buttons
@@ -3284,7 +3398,16 @@ class PaymentPage extends StatelessWidget {
 // MUKA: ORDER RECEIPT
 // ==================================================
 class OrderReceiptPage extends StatelessWidget {
-  const OrderReceiptPage({super.key});
+  final List<CartItem> cartItems;
+  const OrderReceiptPage({super.key, required this.cartItems});
+
+  double get totalQuantity {
+    return cartItems.fold(0, (sum, item) => sum + item.quantity).toDouble();
+  }
+
+  double get totalPrice {
+    return cartItems.fold(0, (sum, item) => sum + (item.priceValue * item.quantity));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -3336,14 +3459,21 @@ class OrderReceiptPage extends StatelessWidget {
                     
                     // Items
                     Expanded(
-                      child: ListView(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        children: [
-                          _receiptItem("WAFFLE", "1", "RM 10.00", "assets/images/bubble_waffle_hub.jpeg"),
-                          const Divider(color: Colors.black26),
-                          _receiptItem("PASTA", "1", "RM 6.00", "https://images.unsplash.com/photo-1473093226795-af9932fe5856?q=80&w=200&auto=format&fit=crop"),
-                        ],
-                      ),
+                      child: cartItems.isEmpty
+                          ? const Center(child: Text("No items purchased"))
+                          : ListView.builder(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              itemCount: cartItems.length,
+                              itemBuilder: (context, index) {
+                                final item = cartItems[index];
+                                return Column(
+                                  children: [
+                                    _receiptItem(item.name, item.quantity.toString(), item.price, item.image),
+                                    if (index < cartItems.length - 1) const Divider(color: Colors.black26),
+                                  ],
+                                );
+                              },
+                            ),
                     ),
                     
                     // Footer
@@ -3353,17 +3483,17 @@ class OrderReceiptPage extends StatelessWidget {
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
-                              Text("QTY", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                              Text("2", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
+                            children: [
+                              const Text("QTY", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                              Text(totalQuantity.toInt().toString(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
                             ],
                           ),
                           const SizedBox(height: 10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
-                              Text("total (RM)", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                              Text("RM 16.00", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.orange)),
+                            children: [
+                              const Text("total (RM)", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                              Text("RM ${totalPrice.toStringAsFixed(2)}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.orange)),
                             ],
                           ),
                         ],
@@ -3404,6 +3534,8 @@ class OrderReceiptPage extends StatelessWidget {
 // ==================================================
 class PickupCounterPage extends StatelessWidget {
   const PickupCounterPage({super.key});
+  // In a real app, this would also take cartItems to show where to pick up each item
+  // For now, I'll keep the static counters as requested unless specified otherwise
 
   @override
   Widget build(BuildContext context) {
