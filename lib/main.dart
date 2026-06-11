@@ -15,12 +15,21 @@ class _EasyQAppState extends State<EasyQApp> {
   String _userName = "Nadzha";
   String _userDOB = "27/06/2007";
   String _userFlag = "🇲🇾";
+  String _userEmail = "nadzhaa254@gmail.com";
+  String? _userProfileImage;
 
-  void _updateProfile(String name, String dob, String flag) {
+  void _updateProfile(String name, String dob, String flag, String? image) {
     setState(() {
       _userName = name;
       _userDOB = dob;
       _userFlag = flag;
+      _userProfileImage = image;
+    });
+  }
+
+  void _updateEmail(String newEmail) {
+    setState(() {
+      _userEmail = newEmail;
     });
   }
 
@@ -46,18 +55,24 @@ class _EasyQAppState extends State<EasyQApp> {
               userName: _userName,
               userDOB: _userDOB,
               userFlag: _userFlag,
+              userEmail: _userEmail,
+              userProfileImage: _userProfileImage,
             ),
         '/settings': (context) => const SettingsPage(),
         '/edit-profile': (context) => EditProfilePage(
               currentName: _userName,
               currentDOB: _userDOB,
               currentFlag: _userFlag,
+              currentProfileImage: _userProfileImage,
               onSave: _updateProfile,
             ),
         '/faq': (context) => const FAQPage(),
         '/change-password': (context) => const ChangePasswordPage(),
         '/about-us': (context) => const AboutUsPage(),
-        '/change-email': (context) => const ChangeEmailPage(),
+        '/change-email': (context) => ChangeEmailPage(
+              currentEmail: _userEmail,
+              onSave: _updateEmail,
+            ),
         '/report-problem': (context) => const ReportProblemPage(),
         '/cafe-detail': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
@@ -1252,12 +1267,16 @@ class UserProfilePage extends StatelessWidget {
   final String userName;
   final String userDOB;
   final String userFlag;
+  final String userEmail;
+  final String? userProfileImage;
 
   const UserProfilePage({
     super.key,
     required this.userName,
     required this.userDOB,
     required this.userFlag,
+    required this.userEmail,
+    this.userProfileImage,
   });
 
   @override
@@ -1315,7 +1334,13 @@ class UserProfilePage extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.black, width: 1),
                   ),
-                  child: const Icon(Icons.person_outline, size: 60, color: Colors.black),
+                  child: userProfileImage == null || userProfileImage!.isEmpty
+                      ? const Icon(Icons.person_outline, size: 60, color: Colors.black)
+                      : ClipOval(
+                          child: userProfileImage!.startsWith('http')
+                              ? Image.network(userProfileImage!, fit: BoxFit.cover)
+                              : Image.asset(userProfileImage!, fit: BoxFit.cover),
+                        ),
                 ),
                 const SizedBox(height: 10),
                 Row(
@@ -1341,9 +1366,9 @@ class UserProfilePage extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Text(
-                    'nadzhaa254@gmail.com',
-                    style: TextStyle(fontSize: 14, color: Colors.black87),
+                  child: Text(
+                    userEmail,
+                    style: const TextStyle(fontSize: 14, color: Colors.black87),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -1653,13 +1678,15 @@ class EditProfilePage extends StatefulWidget {
   final String currentName;
   final String currentDOB;
   final String currentFlag;
-  final Function(String, String, String) onSave;
+  final String? currentProfileImage;
+  final Function(String, String, String, String?) onSave;
 
   const EditProfilePage({
     super.key,
     required this.currentName,
     required this.currentDOB,
     required this.currentFlag,
+    this.currentProfileImage,
     required this.onSave,
   });
 
@@ -1672,6 +1699,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   late TextEditingController _dobController;
   late String _selectedCountry;
   late String _selectedFlag;
+  late String? _selectedProfileImage;
 
   @override
   void initState() {
@@ -1679,6 +1707,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _nameController = TextEditingController(text: widget.currentName);
     _dobController = TextEditingController(text: widget.currentDOB);
     _selectedFlag = widget.currentFlag;
+    _selectedProfileImage = widget.currentProfileImage;
     // Map flag back to country name for initial state
     if (_selectedFlag == "🇸🇬") {
       _selectedCountry = "Singapore";
@@ -1701,6 +1730,50 @@ class _EditProfilePageState extends State<EditProfilePage> {
         _dobController.text = "${picked.day}/${picked.month}/${picked.year}";
       });
     }
+  }
+
+  void _showImagePicker() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Select Profile Picture"),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.person_outline),
+                title: const Text("Default Icon"),
+                onTap: () {
+                  setState(() => _selectedProfileImage = null);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const CircleAvatar(
+                  backgroundImage: NetworkImage('https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100&auto=format&fit=crop'),
+                ),
+                title: const Text("Girl Avatar"),
+                onTap: () {
+                  setState(() => _selectedProfileImage = 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100&auto=format&fit=crop');
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const CircleAvatar(
+                  backgroundImage: NetworkImage('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100&auto=format&fit=crop'),
+                ),
+                title: const Text("Guy Avatar"),
+                onTap: () {
+                  setState(() => _selectedProfileImage = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100&auto=format&fit=crop');
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   void _showCountryPicker() {
@@ -1774,31 +1847,40 @@ class _EditProfilePageState extends State<EditProfilePage> {
           children: [
             // Profile Icon Section
             Center(
-              child: Stack(
-                children: [
-                  Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.black, width: 1),
-                    ),
-                    child: const Icon(Icons.person_outline, size: 80, color: Colors.black),
-                  ),
-                  Positioned(
-                    right: 5,
-                    top: 5,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
+              child: GestureDetector(
+                onTap: _showImagePicker,
+                child: Stack(
+                  children: [
+                    Container(
+                      width: 120,
+                      height: 120,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE5E0E0),
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.black, width: 1),
                       ),
-                      child: const Icon(Icons.edit_note, size: 24, color: Colors.black),
+                      child: _selectedProfileImage == null || _selectedProfileImage!.isEmpty
+                          ? const Icon(Icons.person_outline, size: 80, color: Colors.black)
+                          : ClipOval(
+                              child: _selectedProfileImage!.startsWith('http')
+                                  ? Image.network(_selectedProfileImage!, fit: BoxFit.cover)
+                                  : Image.asset(_selectedProfileImage!, fit: BoxFit.cover),
+                            ),
                     ),
-                  ),
-                ],
+                    Positioned(
+                      right: 5,
+                      top: 5,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE5E0E0),
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.black, width: 1),
+                        ),
+                        child: const Icon(Icons.edit_note, size: 24, color: Colors.black),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 40),
@@ -1862,6 +1944,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     _nameController.text,
                     _dobController.text,
                     _selectedFlag,
+                    _selectedProfileImage,
                   );
                   Navigator.pop(context);
                 },
@@ -2218,8 +2301,71 @@ class AboutUsPage extends StatelessWidget {
 // ==================================================
 // MUKA 17: CHANGE EMAIL
 // ==================================================
-class ChangeEmailPage extends StatelessWidget {
-  const ChangeEmailPage({super.key});
+class ChangeEmailPage extends StatefulWidget {
+  final String currentEmail;
+  final Function(String) onSave;
+
+  const ChangeEmailPage({
+    super.key,
+    required this.currentEmail,
+    required this.onSave,
+  });
+
+  @override
+  State<ChangeEmailPage> createState() => _ChangeEmailPageState();
+}
+
+class _ChangeEmailPageState extends State<ChangeEmailPage> {
+  final TextEditingController _oldEmailController = TextEditingController();
+  final TextEditingController _newEmailController = TextEditingController();
+  final TextEditingController _confirmEmailController = TextEditingController();
+  String? _errorMessage;
+
+  void _handleChangeEmail() {
+    setState(() {
+      _errorMessage = null;
+    });
+
+    final oldEmail = _oldEmailController.text.trim();
+    final newEmail = _newEmailController.text.trim();
+    final confirmEmail = _confirmEmailController.text.trim();
+
+    if (oldEmail != widget.currentEmail) {
+      setState(() {
+        _errorMessage = "unmatched old email";
+      });
+      return;
+    }
+
+    if (newEmail.isEmpty) {
+       setState(() {
+        _errorMessage = "Please enter a new email";
+      });
+      return;
+    }
+
+    if (newEmail != confirmEmail) {
+      setState(() {
+        _errorMessage = "New emails do not match";
+      });
+      return;
+    }
+
+    widget.onSave(newEmail);
+    Navigator.pop(context);
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Email updated successfully')),
+    );
+  }
+
+  @override
+  void dispose() {
+    _oldEmailController.dispose();
+    _newEmailController.dispose();
+    _confirmEmailController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -2262,22 +2408,31 @@ class ChangeEmailPage extends StatelessWidget {
               ),
               const SizedBox(height: 30),
 
+              if (_errorMessage != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: Text(
+                    _errorMessage!,
+                    style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                  ),
+                ),
+
               // Old Email
               const Text('Old Email', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
               const SizedBox(height: 8),
-              _buildEmailField(),
+              _buildEmailField(_oldEmailController),
               const SizedBox(height: 20),
 
               // New Email
               const Text('New Email', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
               const SizedBox(height: 8),
-              _buildEmailField(),
+              _buildEmailField(_newEmailController),
               const SizedBox(height: 20),
 
               // Confirm New Email
               const Text('Confirm New Email', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
               const SizedBox(height: 8),
-              _buildEmailField(),
+              _buildEmailField(_confirmEmailController),
               const SizedBox(height: 60),
 
               // Change Email Button
@@ -2286,7 +2441,7 @@ class ChangeEmailPage extends StatelessWidget {
                   width: 250,
                   height: 45,
                   child: ElevatedButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: _handleChangeEmail,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2196F3),
                       foregroundColor: Colors.white,
@@ -2307,8 +2462,9 @@ class ChangeEmailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildEmailField() {
+  Widget _buildEmailField(TextEditingController controller) {
     return TextField(
+      controller: controller,
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.white,
