@@ -4,8 +4,25 @@ void main() {
   runApp(const EasyQApp());
 }
 
-class EasyQApp extends StatelessWidget {
+class EasyQApp extends StatefulWidget {
   const EasyQApp({super.key});
+
+  @override
+  State<EasyQApp> createState() => _EasyQAppState();
+}
+
+class _EasyQAppState extends State<EasyQApp> {
+  String _userName = "Nadzha";
+  String _userDOB = "27/06/2007";
+  String _userFlag = "🇲🇾";
+
+  void _updateProfile(String name, String dob, String flag) {
+    setState(() {
+      _userName = name;
+      _userDOB = dob;
+      _userFlag = flag;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +42,18 @@ class EasyQApp extends StatelessWidget {
         '/link-sent': (context) => const LinkSentPage(),
         '/dashboard': (context) => const DashboardPage(),
         '/cart': (context) => const CartPage(),
-        '/profile': (context) => const UserProfilePage(),
+        '/profile': (context) => UserProfilePage(
+              userName: _userName,
+              userDOB: _userDOB,
+              userFlag: _userFlag,
+            ),
         '/settings': (context) => const SettingsPage(),
-        '/edit-profile': (context) => const EditProfilePage(),
+        '/edit-profile': (context) => EditProfilePage(
+              currentName: _userName,
+              currentDOB: _userDOB,
+              currentFlag: _userFlag,
+              onSave: _updateProfile,
+            ),
         '/faq': (context) => const FAQPage(),
         '/change-password': (context) => const ChangePasswordPage(),
         '/about-us': (context) => const AboutUsPage(),
@@ -316,7 +342,7 @@ class PasswordResetPage extends StatelessWidget {
                     filled: true,
                     fillColor: const Color(0xFFFFD000),
                     hintText: 'Phone number',
-                    prefixText: 'ðŸ‡²ðŸ‡¾ +60 ',
+                    prefixText: '🇲🇾 +60 ',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(4), borderSide: BorderSide.none),
                   ),
                 ),
@@ -1223,7 +1249,16 @@ class WalletPage extends StatelessWidget {
 // MUKA 11: USER PROFILE
 // ==================================================
 class UserProfilePage extends StatelessWidget {
-  const UserProfilePage({super.key});
+  final String userName;
+  final String userDOB;
+  final String userFlag;
+
+  const UserProfilePage({
+    super.key,
+    required this.userName,
+    required this.userDOB,
+    required this.userFlag,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1266,9 +1301,9 @@ class UserProfilePage extends StatelessWidget {
                         style: TextStyle(color: Colors.grey, fontSize: 13),
                       ),
                     ),
-                    const Text(
-                      '27/06/2007',
-                      style: TextStyle(color: Colors.grey, fontSize: 13),
+                    Text(
+                      userDOB,
+                      style: const TextStyle(color: Colors.grey, fontSize: 13),
                     ),
                   ],
                 ),
@@ -1280,23 +1315,17 @@ class UserProfilePage extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.black, width: 1),
                   ),
-                  child: ClipOval(
-                    child: Image.network(
-                      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop',
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => const Icon(Icons.person_outline, size: 60, color: Colors.black),
-                    ),
-                  ),
+                  child: const Icon(Icons.person_outline, size: 60, color: Colors.black),
                 ),
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // Ikon bendera (guna emoji atau icon)
-                    const Text('ðŸ‡²ðŸ‡¾ ', style: TextStyle(fontSize: 18)),
-                    const Text(
-                      'Nadzha',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+                    Text('$userFlag ', style: const TextStyle(fontSize: 18)),
+                    Text(
+                      userName,
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
                     ),
                   ],
                 ),
@@ -1338,9 +1367,9 @@ class UserProfilePage extends StatelessWidget {
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                     ),
                     const SizedBox(height: 20),
-                    _notificationCard('https://images.unsplash.com/photo-1574316071802-0d684efa7bf5?q=80&w=200&auto=format&fit=crop', 'Order received at 10.30 a.m'),
+                    _notificationCard('assets/images/bubble_waffle_hub.jpeg', 'Order received at 10.30 a.m'),
                     const SizedBox(height: 15),
-                    _notificationCard('https://images.unsplash.com/photo-1544259509-d050db90352b?q=80&w=200&auto=format&fit=crop', 'Order received at 10.30 a.m'),
+                    _notificationCard('assets/images/brown_sugar_boba.jpeg', 'Order received at 10.30 a.m'),
                     const SizedBox(height: 40),
                     // Footer
                     const Icon(Icons.info_outline, color: Colors.black87),
@@ -1375,18 +1404,31 @@ class UserProfilePage extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: Image.network(
-              imagePath,
-              width: 60,
-              height: 60,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                width: 60,
-                height: 60,
-                color: Colors.grey.shade300,
-                child: const Icon(Icons.fastfood),
-              ),
-            ),
+            child: imagePath.startsWith('assets/')
+                ? Image.asset(
+                    imagePath,
+                    width: 60,
+                    height: 60,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      width: 60,
+                      height: 60,
+                      color: Colors.grey.shade300,
+                      child: const Icon(Icons.fastfood),
+                    ),
+                  )
+                : Image.network(
+                    imagePath,
+                    width: 60,
+                    height: 60,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      width: 60,
+                      height: 60,
+                      color: Colors.grey.shade300,
+                      child: const Icon(Icons.fastfood),
+                    ),
+                  ),
           ),
           const SizedBox(width: 15),
           Expanded(
@@ -1608,17 +1650,44 @@ class _SettingsPageState extends State<SettingsPage> {
 // MUKA 13: EDIT PROFILE
 // ==================================================
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({super.key});
+  final String currentName;
+  final String currentDOB;
+  final String currentFlag;
+  final Function(String, String, String) onSave;
+
+  const EditProfilePage({
+    super.key,
+    required this.currentName,
+    required this.currentDOB,
+    required this.currentFlag,
+    required this.onSave,
+  });
 
   @override
   State<EditProfilePage> createState() => _EditProfilePageState();
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  final TextEditingController _nameController = TextEditingController(text: "Nad");
-  final TextEditingController _dobController = TextEditingController();
-  String _selectedCountry = "Malaysia";
-  String _selectedFlag = "ðŸ‡²ðŸ‡¾";
+  late TextEditingController _nameController;
+  late TextEditingController _dobController;
+  late String _selectedCountry;
+  late String _selectedFlag;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.currentName);
+    _dobController = TextEditingController(text: widget.currentDOB);
+    _selectedFlag = widget.currentFlag;
+    // Map flag back to country name for initial state
+    if (_selectedFlag == "🇸🇬") {
+      _selectedCountry = "Singapore";
+    } else if (_selectedFlag == "🇮🇩") {
+      _selectedCountry = "Indonesia";
+    } else {
+      _selectedCountry = "Malaysia";
+    }
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -1643,34 +1712,34 @@ class _EditProfilePageState extends State<EditProfilePage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Text("ðŸ‡²ðŸ‡¾"),
+              leading: const Text("🇲🇾"),
               title: const Text("Malaysia"),
               onTap: () {
                 setState(() {
                   _selectedCountry = "Malaysia";
-                  _selectedFlag = "ðŸ‡²ðŸ‡¾";
+                  _selectedFlag = "🇲🇾";
                 });
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              leading: const Text("ðŸ‡¸ðŸ‡¬"),
+              leading: const Text("🇸🇬"),
               title: const Text("Singapore"),
               onTap: () {
                 setState(() {
                   _selectedCountry = "Singapore";
-                  _selectedFlag = "ðŸ‡¸ðŸ‡¬";
+                  _selectedFlag = "🇸🇬";
                 });
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              leading: const Text("ðŸ‡®ðŸ‡©"),
+              leading: const Text("🇮🇩"),
               title: const Text("Indonesia"),
               onTap: () {
                 setState(() {
                   _selectedCountry = "Indonesia";
-                  _selectedFlag = "ðŸ‡®ðŸ‡©";
+                  _selectedFlag = "🇮🇩";
                 });
                 Navigator.pop(context);
               },
@@ -1714,13 +1783,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.black, width: 1),
                     ),
-                    child: ClipOval(
-                      child: Image.network(
-                        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop',
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => const Icon(Icons.person_outline, size: 80, color: Colors.black),
-                      ),
-                    ),
+                    child: const Icon(Icons.person_outline, size: 80, color: Colors.black),
                   ),
                   Positioned(
                     right: 5,
@@ -1794,7 +1857,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
               width: double.infinity,
               height: 55,
               child: ElevatedButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  widget.onSave(
+                    _nameController.text,
+                    _dobController.text,
+                    _selectedFlag,
+                  );
+                  Navigator.pop(context);
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2196F3),
                   foregroundColor: Colors.white,
@@ -1992,7 +2062,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               ),
               const Padding(
                 padding: EdgeInsets.only(top: 4, left: 4),
-                child: Text('â€¢ Must be at least 8 characters.', style: TextStyle(fontSize: 12, color: Colors.black54)),
+                child: Text('* Must be at least 8 characters.', style: TextStyle(fontSize: 12, color: Colors.black54)),
               ),
               const SizedBox(height: 20),
 
@@ -2005,7 +2075,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               ),
               const Padding(
                 padding: EdgeInsets.only(top: 4, left: 4),
-                child: Text('â€¢ Both passwords must match.', style: TextStyle(fontSize: 12, color: Colors.black54)),
+                child: Text('* Both passwords must match.', style: TextStyle(fontSize: 12, color: Colors.black54)),
               ),
               const SizedBox(height: 40),
 
@@ -2313,7 +2383,7 @@ class _ReportProblemPageState extends State<ReportProblemPage> {
               TextField(
                 maxLines: 10,
                 decoration: InputDecoration(
-                  hintText: '(Apps buggy, payment doesnâ€™t work, system doesnâ€™t respond, etc.)',
+                  hintText: "(Apps buggy, payment doesn't work, system doesn't respond, etc.)",
                   hintStyle: const TextStyle(color: Colors.black26, fontSize: 14),
                   filled: true,
                   fillColor: Colors.white,
@@ -2358,7 +2428,7 @@ class _ReportProblemPageState extends State<ReportProblemPage> {
               const SizedBox(height: 40),
               Center(
                 child: const Text(
-                  'â€¢ Your feedback mean alot to us!',
+                  '* Your feedback mean alot to us!',
                   style: TextStyle(color: Colors.black45, fontSize: 13),
                 ),
               ),
