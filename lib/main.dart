@@ -550,7 +550,7 @@ class _DashboardPageState extends State<DashboardPage> {
       "hours": "9.00 A.M -10.00 P.M",
       "promoBottom": "Combo Deals",
       "recommendations": [
-        {"name": "WAFFLE", "price": "RM 6.00", "image": "assets/images/bubble_waffle_hub.jpeg"},
+        {"name": "WAFFLE", "price": "RM 6.00", "image": "assets/images/waffle.jpg"},
         {"name": "BOBA MILK TEA", "price": "RM 6.00", "image": "assets/images/brown_sugar_boba.jpeg"},
       ]
     },
@@ -565,7 +565,7 @@ class _DashboardPageState extends State<DashboardPage> {
       "hours": "11.00 A.M -11.00 P.M",
       "promoBottom": "Student Discount",
       "recommendations": [
-        {"name": "PASTA", "price": "RM 6.00", "image": "https://images.unsplash.com/photo-1563379091339-03b21bc4a4f8?q=80&w=200&auto=format&fit=crop"},
+        {"name": "PASTA", "price": "RM 6.00", "image": "assets/images/pasta.jpg"},
       ]
     },
     {
