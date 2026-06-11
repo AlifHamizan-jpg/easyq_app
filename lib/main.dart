@@ -1498,9 +1498,9 @@ class UserProfilePage extends StatelessWidget {
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                     ),
                     const SizedBox(height: 20),
-                    _notificationCard('assets/images/bubble_waffle_hub.jpeg', 'Order received at 10.30 a.m'),
+                    _notificationCard('assets/images/bubble_waffle_hub.jpeg', 'New Menu Available at Waffle Bubble Hub'),
                     const SizedBox(height: 15),
-                    _notificationCard('assets/images/brown_sugar_boba.jpeg', 'Order received at 10.30 a.m'),
+                    _notificationCard('assets/images/brown_sugar_boba.jpeg', 'Discount around 40% for Boba Milk Tea!'),
                     const SizedBox(height: 40),
                     // Footer
                     const Icon(Icons.info_outline, color: Colors.black87),
@@ -1563,17 +1563,9 @@ class UserProfilePage extends StatelessWidget {
           ),
           const SizedBox(width: 15),
           Expanded(
-            child: RichText(
-              text: TextSpan(
-                style: const TextStyle(color: Colors.black, fontSize: 14),
-                children: [
-                  const TextSpan(text: 'Order received at '),
-                  TextSpan(
-                    text: text.split('at ').last,
-                    style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.orange),
-                  ),
-                ],
-              ),
+            child: Text(
+              text,
+              style: const TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -1768,8 +1760,8 @@ class _SettingsPageState extends State<SettingsPage> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeThumbColor: Colors.grey,
-            activeTrackColor: Colors.black54,
+            activeColor: Colors.purple,
+            activeTrackColor: Colors.purple.shade200,
           ),
         ],
       ),
@@ -2376,9 +2368,9 @@ class AboutUsPage extends StatelessWidget {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 25),
-              _platformItem(Icons.music_note, 'EasyQ67z'),
+              _platformItem(Icons.tiktok, 'EasyQ67z'),
               const SizedBox(height: 15),
-              _platformItem(Icons.camera_alt_outlined, 'EasyQ67z'),
+              _platformItem(Icons.camera_alt, 'EasyQ67z'),
               const SizedBox(height: 15),
               _platformItem(Icons.language, 'www.EasyQ.com'),
               const SizedBox(height: 30),
