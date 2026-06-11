@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "622350474294",
+    "project_id": "shuppq-847d6",
+    "storage_bucket": "shuppq-847d6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:622350474294:android:f3b843b794c11814e10c97",
+        "android_client_info": {
+          "package_name": "com.example.easyq"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxFlB9o2I6K8gm7mhpOd9etuYsYJdIaHQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
