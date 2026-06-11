@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 void main() {
   runApp(const EasyQApp());
@@ -38,6 +38,17 @@ class EasyQApp extends StatelessWidget {
           return CafeDetailPage(cafeData: args);
         },
         '/wallet': (context) => const WalletPage(),
+        '/order-summary': (context) => const OrderSummaryPage(),
+        '/checkout': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+          final isPayAtCounter = args?['isPayAtCounter'] ?? false;
+          return CheckoutPage(isPayAtCounter: isPayAtCounter);
+        },
+        '/payment': (context) => const PaymentPage(),
+        '/order-receipt': (context) => const OrderReceiptPage(),
+        '/pickup-counter': (context) => const PickupCounterPage(),
+        '/queue-progress': (context) => const QueueProgressPage(),
+        '/notifications': (context) => const NotificationPage(),
       },
     );
   }
@@ -305,7 +316,7 @@ class PasswordResetPage extends StatelessWidget {
                     filled: true,
                     fillColor: const Color(0xFFFFD000),
                     hintText: 'Phone number',
-                    prefixText: '🇲🇾 +60 ',
+                    prefixText: 'ðŸ‡²ðŸ‡¾ +60 ',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(4), borderSide: BorderSide.none),
                   ),
                 ),
@@ -422,13 +433,13 @@ class _DashboardPageState extends State<DashboardPage> {
       "tagColor": Colors.orange,
       "rating": 4.9,
       "distance": "200m",
-      "image": "https://images.unsplash.com/photo-1574316071802-0d684efa7bf5?q=80&w=400&auto=format&fit=crop",
+      "image": "assets/images/bubble_waffle_hub.jpeg",
       "isAd": false,
       "hours": "9.00 A.M -10.00 P.M",
       "promoBottom": "Combo Deals",
       "recommendations": [
-        {"name": "WAFFLE", "price": "RM 6.00", "image": "https://images.unsplash.com/photo-1562376552-0d160a2f238d?q=80&w=200&auto=format&fit=crop"},
-        {"name": "BOBA MILK TEA", "price": "RM 6.00", "image": "https://images.unsplash.com/photo-1544259509-d050db90352b?q=80&w=200&auto=format&fit=crop"},
+        {"name": "WAFFLE", "price": "RM 6.00", "image": "assets/images/bubble_waffle_hub.jpeg"},
+        {"name": "BOBA MILK TEA", "price": "RM 6.00", "image": "assets/images/brown_sugar_boba.jpeg"},
       ]
     },
     {
@@ -451,12 +462,12 @@ class _DashboardPageState extends State<DashboardPage> {
       "tagColor": Colors.green,
       "rating": 4.6,
       "distance": "150m",
-      "image": "https://images.unsplash.com/photo-1622543953490-3b7bc367c427?q=80&w=400&auto=format&fit=crop",
+      "image": "assets/images/energy_boost_cafe.jpg",
       "isAd": true,
       "hours": "9.00 A.M -9.00 P.M",
       "promoBottom": "Fresh & Healthy",
       "recommendations": [
-        {"name": "ENERGY DRINK", "price": "RM 2.00", "image": "https://images.unsplash.com/photo-1622543953490-3b7bc367c427?q=80&w=200&auto=format&fit=crop"},
+        {"name": "ENERGY DRINK", "price": "RM 2.00", "image": "assets/images/red_bull.jpeg"},
       ]
     },
     {
@@ -465,12 +476,12 @@ class _DashboardPageState extends State<DashboardPage> {
       "tagColor": Colors.red,
       "rating": 4.7,
       "distance": "200m",
-      "image": "https://images.unsplash.com/photo-1595103445524-817887308d27?q=80&w=400&auto=format&fit=crop",
+      "image": "assets/images/asian_street_eats.jpeg",
       "isAd": false,
       "hours": "9.00 A.M -9.00 P.M",
       "promoBottom": "Weekend Special",
       "recommendations": [
-        {"name": "LAKSA", "price": "RM 6.00", "image": "https://images.unsplash.com/photo-1595103445524-817887308d27?q=80&w=400&auto=format&fit=crop"},
+        {"name": "LAKSA", "price": "RM 6.00", "image": "assets/images/laksa.jpeg"},
       ]
     },
   ];
@@ -562,7 +573,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       color: const Color(0xFFFFF8E1),
                       borderRadius: BorderRadius.circular(20),
                       image: const DecorationImage(
-                        image: NetworkImage('https://img.freepik.com/free-vector/bubble-tea-advertisement-template_23-2148784318.jpg?t=st=1718040000~exp=1718043600~hmac=6b9b3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e&w=800'),
+                        image: AssetImage('assets/images/buy_one_free_one.jpg'),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -570,9 +581,40 @@ class _DashboardPageState extends State<DashboardPage> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         gradient: LinearGradient(
-                          colors: [Colors.black.withOpacity(0.1), Colors.transparent],
+                          colors: [Colors.black.withValues(alpha: 0.3), Colors.transparent],
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      child: RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black45,
+                                offset: Offset(2, 2),
+                                blurRadius: 5,
+                              ),
+                            ],
+                          ),
+                          children: [
+                            const TextSpan(
+                              text: 'BUY 1 GET 1 FREE\n',
+                              style: TextStyle(fontSize: 26, letterSpacing: 1.2),
+                            ),
+                            TextSpan(
+                              text: 'BOBA MILK TEA OFFER',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.amber.shade300,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -639,20 +681,52 @@ class _DashboardPageState extends State<DashboardPage> {
         ),
       ),
 
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: (i) {
-          setState(() => _selectedIndex = i);
-          if (i == 1) Navigator.pushNamed(context, '/cafe-list');
-          if (i == 2) Navigator.pushNamed(context, '/notifications');
-        },
-        backgroundColor: const Color(0xFFD2B48C),
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.black54,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home, size: 28), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.people_alt, size: 28), label: 'Queue'),
-          BottomNavigationBarItem(icon: Icon(Icons.notifications_outlined, size: 28), label: 'Notifications'),
+      bottomNavigationBar: Container(
+        height: 85,
+        decoration: const BoxDecoration(
+          color: Color(0xFFE5E0E0),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(45)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _navItem(Icons.home, "Home", _selectedIndex == 0, () {
+              setState(() => _selectedIndex = 0);
+            }),
+            _navItem(Icons.group_outlined, "Queue", _selectedIndex == 1, () {
+              setState(() => _selectedIndex = 1);
+              Navigator.pushNamed(context, '/queue-progress');
+            }),
+            _navItem(Icons.notifications_none, "Notification", _selectedIndex == 2, () {
+              setState(() => _selectedIndex = 2);
+              Navigator.pushNamed(context, '/notifications');
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _navItem(IconData icon, String label, bool isActive, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: isActive ? Colors.white : Colors.transparent,
+              shape: BoxShape.circle,
+              boxShadow: isActive ? [const BoxShadow(color: Colors.black12, blurRadius: 4)] : [],
+            ),
+            child: Icon(icon, color: Colors.black, size: 28),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+          ),
         ],
       ),
     );
@@ -687,14 +761,23 @@ class _DashboardPageState extends State<DashboardPage> {
                 ),
                 child: ClipRRect(
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                  child: Image.network(
-                    imagePath,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      color: Colors.grey.shade300,
-                      child: const Icon(Icons.broken_image, color: Colors.grey),
-                    ),
-                  ),
+                  child: imagePath.startsWith('assets/')
+                    ? Image.asset(
+                        imagePath,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: Colors.grey.shade300,
+                          child: const Icon(Icons.broken_image, color: Colors.grey),
+                        ),
+                      )
+                    : Image.network(
+                        imagePath,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: Colors.grey.shade300,
+                          child: const Icon(Icons.broken_image, color: Colors.grey),
+                        ),
+                      ),
                 ),
               ),
             ),
@@ -788,13 +871,13 @@ class CartPage extends StatelessWidget {
               child: ListView(
                 padding: const EdgeInsets.all(15),
                 children: [
-                  _cartItem('BOBA MILK TEA', 'RM 6.00', 2, 'buy one get free one', 'https://images.unsplash.com/photo-1544259509-d050db90352b?q=80&w=200&auto=format&fit=crop'),
+                  _cartItem('BOBA MILK TEA', 'RM 6.00', 2, 'buy one get free one', 'assets/images/brown_sugar_boba.jpeg'),
                   _cartItem('ODEN', 'RM 14.40', 2, 'discount 40% on second order', 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?q=80&w=200&auto=format&fit=crop'),
                   _cartItem('SUSHI', 'RM 16.00', 2, 'add-on deals at lower prices', 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=200&auto=format&fit=crop'),
                   _cartItem('PASTA', 'RM 6.00', 1, 'add-on deals at lower prices', 'https://images.unsplash.com/photo-1473093226795-af9932fe5856?q=80&w=200&auto=format&fit=crop'),
-                  _cartItem('ENERGY DRINK', 'RM 6.00', 3, 'add-on deals at lower prices', 'https://images.unsplash.com/photo-1622543953490-3b7bc367c427?q=80&w=200&auto=format&fit=crop'),
-                  _cartItem('WAFFLE', 'RM 6.00', 1, 'add-on deals at lower prices', 'https://images.unsplash.com/photo-1574316071802-0d684efa7bf5?q=80&w=200&auto=format&fit=crop'),
-                  _cartItem('LAKSA', 'RM 6.00', 1, 'add-on deals at lower prices', 'https://images.unsplash.com/photo-1595103445524-817887308d27?q=80&w=200&auto=format&fit=crop'),
+                  _cartItem('ENERGY DRINK', 'RM 6.00', 3, 'add-on deals at lower prices', 'assets/images/red_bull.jpeg'),
+                  _cartItem('WAFFLE', 'RM 6.00', 1, 'add-on deals at lower prices', 'assets/images/bubble_waffle_hub.jpeg'),
+                  _cartItem('LAKSA', 'RM 6.00', 1, 'add-on deals at lower prices', 'assets/images/laksa.jpeg'),
                 ],
               ),
             ),
@@ -837,7 +920,7 @@ class CartPage extends StatelessWidget {
                   const Text('RM 60.40', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange)),
                   const SizedBox(width: 15),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () => Navigator.pushNamed(context, '/order-summary'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange,
                       foregroundColor: Colors.white,
@@ -1210,7 +1293,7 @@ class UserProfilePage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // Ikon bendera (guna emoji atau icon)
-                    const Text('🇲🇾 ', style: TextStyle(fontSize: 18)),
+                    const Text('ðŸ‡²ðŸ‡¾ ', style: TextStyle(fontSize: 18)),
                     const Text(
                       'Nadzha',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
@@ -1535,7 +1618,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController _nameController = TextEditingController(text: "Nad");
   final TextEditingController _dobController = TextEditingController();
   String _selectedCountry = "Malaysia";
-  String _selectedFlag = "🇲🇾";
+  String _selectedFlag = "ðŸ‡²ðŸ‡¾";
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -1560,34 +1643,34 @@ class _EditProfilePageState extends State<EditProfilePage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Text("🇲🇾"),
+              leading: const Text("ðŸ‡²ðŸ‡¾"),
               title: const Text("Malaysia"),
               onTap: () {
                 setState(() {
                   _selectedCountry = "Malaysia";
-                  _selectedFlag = "🇲🇾";
+                  _selectedFlag = "ðŸ‡²ðŸ‡¾";
                 });
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              leading: const Text("🇸🇬"),
+              leading: const Text("ðŸ‡¸ðŸ‡¬"),
               title: const Text("Singapore"),
               onTap: () {
                 setState(() {
                   _selectedCountry = "Singapore";
-                  _selectedFlag = "🇸🇬";
+                  _selectedFlag = "ðŸ‡¸ðŸ‡¬";
                 });
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              leading: const Text("🇮🇩"),
+              leading: const Text("ðŸ‡®ðŸ‡©"),
               title: const Text("Indonesia"),
               onTap: () {
                 setState(() {
                   _selectedCountry = "Indonesia";
-                  _selectedFlag = "🇮🇩";
+                  _selectedFlag = "ðŸ‡®ðŸ‡©";
                 });
                 Navigator.pop(context);
               },
@@ -1909,7 +1992,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               ),
               const Padding(
                 padding: EdgeInsets.only(top: 4, left: 4),
-                child: Text('• Must be at least 8 characters.', style: TextStyle(fontSize: 12, color: Colors.black54)),
+                child: Text('â€¢ Must be at least 8 characters.', style: TextStyle(fontSize: 12, color: Colors.black54)),
               ),
               const SizedBox(height: 20),
 
@@ -1922,7 +2005,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               ),
               const Padding(
                 padding: EdgeInsets.only(top: 4, left: 4),
-                child: Text('• Both passwords must match.', style: TextStyle(fontSize: 12, color: Colors.black54)),
+                child: Text('â€¢ Both passwords must match.', style: TextStyle(fontSize: 12, color: Colors.black54)),
               ),
               const SizedBox(height: 40),
 
@@ -2230,7 +2313,7 @@ class _ReportProblemPageState extends State<ReportProblemPage> {
               TextField(
                 maxLines: 10,
                 decoration: InputDecoration(
-                  hintText: '(Apps buggy, payment doesn’t work, system doesn’t respond, etc.)',
+                  hintText: '(Apps buggy, payment doesnâ€™t work, system doesnâ€™t respond, etc.)',
                   hintStyle: const TextStyle(color: Colors.black26, fontSize: 14),
                   filled: true,
                   fillColor: Colors.white,
@@ -2275,7 +2358,7 @@ class _ReportProblemPageState extends State<ReportProblemPage> {
               const SizedBox(height: 40),
               Center(
                 child: const Text(
-                  '• Your feedback mean alot to us!',
+                  'â€¢ Your feedback mean alot to us!',
                   style: TextStyle(color: Colors.black45, fontSize: 13),
                 ),
               ),
@@ -2329,14 +2412,23 @@ class CafeDetailPage extends StatelessWidget {
                   Container(
                     height: 250,
                     width: double.infinity,
-                    child: Image.network(
-                      cafeData['image'] ?? 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=1000&auto=format&fit=crop',
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        color: Colors.grey.shade300,
-                        child: const Icon(Icons.broken_image, size: 50, color: Colors.grey),
-                      ),
-                    ),
+                    child: (cafeData['image'] ?? '').startsWith('assets/')
+                        ? Image.asset(
+                            cafeData['image'],
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Container(
+                              color: Colors.grey.shade300,
+                              child: const Icon(Icons.broken_image, size: 50, color: Colors.grey),
+                            ),
+                          )
+                        : Image.network(
+                            cafeData['image'] ?? 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=1000&auto=format&fit=crop',
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Container(
+                              color: Colors.grey.shade300,
+                              child: const Icon(Icons.broken_image, size: 50, color: Colors.grey),
+                            ),
+                          ),
                   ),
                   // Floating Back Button
                   Positioned(
@@ -2453,11 +2545,17 @@ class CafeDetailPage extends StatelessWidget {
               width: 60,
               height: 60,
               color: Colors.grey.shade200,
-              child: Image.network(
-                imagePath,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => const Icon(Icons.fastfood, color: Colors.grey),
-              ),
+              child: imagePath.startsWith('assets/')
+                  ? Image.asset(
+                      imagePath,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => const Icon(Icons.fastfood, color: Colors.grey),
+                    )
+                  : Image.network(
+                      imagePath,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => const Icon(Icons.fastfood, color: Colors.grey),
+                    ),
             ),
           ),
           const SizedBox(height: 8),
@@ -2474,3 +2572,1010 @@ class CafeDetailPage extends StatelessWidget {
     );
   }
 }
+
+
+// ==================================================
+// MUKA: ORDER SUMMARY
+// ==================================================
+class OrderSummaryPage extends StatefulWidget {
+  const OrderSummaryPage({super.key});
+
+  @override
+  State<OrderSummaryPage> createState() => _OrderSummaryPageState();
+}
+
+class _OrderSummaryPageState extends State<OrderSummaryPage> {
+  bool isTakeAway = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF5D4037), // Dark brown background matching the image
+      body: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            // Header with Back Button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 30),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+            
+            // Main Card
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(20, 10, 20, 40),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3E5E5), // Light cream color
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 30),
+                    const Text(
+                      "ORDER SUMMARY",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF5D4037),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    
+                    // Items List
+                    Expanded(
+                      child: ListView(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        children: [
+                          _orderItem(
+                            "WAFFLE",
+                            "Bubble Waffle\nHub - Student\nCenter",
+                            "RM 10.00",
+                            "1",
+                            "assets/images/bubble_waffle_hub.jpeg",
+                           ),
+                          const Divider(color: Colors.black26),
+                          _orderItem(
+                            "PASTA",
+                            "Pasta Project -\nUniversity Walk",
+                            "RM 6.00",
+                            "1",
+                            "https://images.unsplash.com/photo-1473093226795-af9932fe5856?q=80&w=200&auto=format&fit=crop",
+                          ),
+                        ],
+                      ),
+                    ),
+                    
+                    // Buttons
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _toggleButton(
+                                  "Take Away",
+                                  isTakeAway,
+                                  () => setState(() => isTakeAway = true),
+                                ),
+                              ),
+                              const SizedBox(width: 15),
+                              Expanded(
+                                child: _toggleButton(
+                                  "Dine In",
+                                  !isTakeAway,
+                                  () => setState(() => isTakeAway = false),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 25),
+                          SizedBox(
+                            width: 160,
+                            height: 45,
+                            child: ElevatedButton(
+                              onPressed: () => Navigator.pushNamed(context, "/payment"),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFBCAAA4), // Beige/Grey from image
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                elevation: 0,
+                              ),
+                              child: const Text(
+                                "Choose Service",
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _orderItem(String name, String sub, String price, String qty, String img) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 15),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: img.startsWith('assets/')
+                ? Image.asset(
+                    img,
+                    width: 80,
+                    height: 80,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      width: 80,
+                      height: 80,
+                      color: Colors.grey.shade300,
+                      child: const Icon(Icons.fastfood),
+                    ),
+                  )
+                : Image.network(
+                    img,
+                    width: 80,
+                    height: 80,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      width: 80,
+                      height: 80,
+                      color: Colors.grey.shade300,
+                      child: const Icon(Icons.fastfood),
+                    ),
+                  ),
+          ),
+          const SizedBox(width: 15),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.orange)),
+                const SizedBox(height: 2),
+                Text(sub, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.black87)),
+              ],
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(price, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.orange)),
+              const SizedBox(height: 10),
+              Text(qty, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _toggleButton(String label, bool isSelected, VoidCallback onTap) {
+    return SizedBox(
+      height: 40,
+      child: ElevatedButton(
+        onPressed: onTap,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isSelected ? const Color(0xFFE53935) : const Color(0xFFBCAAA4), // Red if selected, else beige
+          foregroundColor: Colors.white,
+          elevation: 0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        ),
+        child: Text(
+          label,
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+}
+
+// ==================================================
+// MUKA: CHECKOUT
+// ==================================================
+class CheckoutPage extends StatelessWidget {
+  final bool isPayAtCounter;
+  const CheckoutPage({super.key, required this.isPayAtCounter});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF5D4037), // Dark brown background
+      body: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            // Header with Back Button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 30),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+            
+            // Main Card
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(20, 10, 20, 40),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3E5E5), // Light cream color
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 40),
+                    // Green Checkmark Icon
+                    Container(
+                      padding: const EdgeInsets.all(15),
+                      decoration: const BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.check, color: Colors.white, size: 60),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      "Order Successful",
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF5D4037),
+                      ),
+                    ),
+                    const SizedBox(height: 60),
+                    
+                    // Buttons List
+                    _successButton(Icons.print, "Print", onTap: () {
+                      Navigator.pushNamed(context, '/order-receipt');
+                    }),
+                    
+                    if (isPayAtCounter) ...[
+                      const SizedBox(height: 20),
+                      _successButton(Icons.access_time, "Pickup at counter", onTap: () {
+                        Navigator.pushNamed(context, '/pickup-counter');
+                      }),
+                    ],
+                    
+                    const SizedBox(height: 20),
+                    _successButton(Icons.home, "Back to home", onTap: () {
+                      Navigator.pushNamedAndRemoveUntil(context, "/dashboard", (route) => false);
+                    }),
+                    
+                    const Spacer(),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _successButton(IconData icon, String title, {VoidCallback? onTap}) {
+    return SizedBox(
+      width: 250,
+      height: 50,
+      child: ElevatedButton(
+        onPressed: onTap ?? () {},
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFFBCAAA4), // Beige
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          elevation: 0,
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: Colors.black, size: 30),
+            const SizedBox(width: 20),
+            Text(
+              title,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+// ==================================================
+// MUKA: PAYMENT PAGE
+// ==================================================
+class PaymentPage extends StatelessWidget {
+  const PaymentPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF5D4037), // Dark brown background
+      body: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            // Header with Back Button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 30),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+            
+            // Main Card
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(20, 10, 20, 40),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3E5E5), // Light cream color
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 30),
+                    const Text(
+                      "Payment",
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF5D4037),
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    
+                    // Payment Options
+                    _paymentOption(Icons.receipt_long, "Pay At Counter", onTap: () {
+                      Navigator.pushNamed(context, '/checkout', arguments: {'isPayAtCounter': true});
+                    }),
+                    _paymentOption(Icons.qr_code_scanner, "QR Payment", onTap: () {
+                      Navigator.pushNamed(context, '/checkout', arguments: {'isPayAtCounter': false});
+                    }),
+                    _paymentOption(Icons.credit_card, "Credit Card", subtitle: "mastercard", onTap: () {
+                      Navigator.pushNamed(context, '/checkout', arguments: {'isPayAtCounter': false});
+                    }),
+                    _paymentOption(Icons.credit_card, "Debit Card", subtitle: "VISA", onTap: () {
+                      Navigator.pushNamed(context, '/checkout', arguments: {'isPayAtCounter': false});
+                    }),
+                    _paymentOption(Icons.payment, "PayPal", onTap: () {
+                      Navigator.pushNamed(context, '/checkout', arguments: {'isPayAtCounter': false});
+                    }),
+                    
+                    const Spacer(),
+                    const Divider(color: Colors.black26, thickness: 1),
+                    const SizedBox(height: 30),
+                    
+                    // Cancel Button
+                    SizedBox(
+                      width: 200,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFE53935), // Red
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                          elevation: 0,
+                        ),
+                        child: const Text(
+                          "Cancel Payment",
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _paymentOption(IconData icon, String title, {String? subtitle, VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 250,
+        height: 45,
+        margin: const EdgeInsets.only(bottom: 20),
+        decoration: BoxDecoration(
+          color: const Color(0xFFBCAAA4), // Beige
+          borderRadius: BorderRadius.circular(22),
+        ),
+        child: Row(
+          children: [
+            const SizedBox(width: 15),
+            Icon(icon, color: Colors.black87, size: 24),
+            const SizedBox(width: 15),
+            Expanded(
+              child: Row(
+                children: [
+                  if (subtitle != null) ...[
+                    Text(
+                      subtitle,
+                      style: const TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                  ],
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+// ==================================================
+// MUKA: ORDER RECEIPT
+// ==================================================
+class OrderReceiptPage extends StatelessWidget {
+  const OrderReceiptPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF5D4037),
+      body: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 30),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(20, 10, 20, 40),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3E5E5),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 30),
+                    const Text(
+                      "Order Receipt",
+                      style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF5D4037)),
+                    ),
+                    const SizedBox(height: 20),
+                    // Table Header
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          Text("FOOD", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                          Text("QTY", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                          Text("PRICE(RM)", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                        ],
+                      ),
+                    ),
+                    const Divider(color: Colors.black, thickness: 1, indent: 20, endIndent: 20),
+                    
+                    // Items
+                    Expanded(
+                      child: ListView(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        children: [
+                          _receiptItem("WAFFLE", "1", "RM 10.00", "assets/images/bubble_waffle_hub.jpeg"),
+                          const Divider(color: Colors.black26),
+                          _receiptItem("PASTA", "1", "RM 6.00", "https://images.unsplash.com/photo-1473093226795-af9932fe5856?q=80&w=200&auto=format&fit=crop"),
+                        ],
+                      ),
+                    ),
+                    
+                    // Footer
+                    Padding(
+                      padding: const EdgeInsets.all(30),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: const [
+                              Text("QTY", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                              Text("2", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: const [
+                              Text("total (RM)", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                              Text("RM 16.00", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.orange)),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _receiptItem(String name, String qty, String price, String img) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: img.startsWith('assets/')
+                ? Image.asset(img, width: 60, height: 60, fit: BoxFit.cover)
+                : Image.network(img, width: 60, height: 60, fit: BoxFit.cover),
+          ),
+          Text(qty, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22)),
+          Text(price, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.orange)),
+        ],
+      ),
+    );
+  }
+}
+
+// ==================================================
+// MUKA: PICKUP COUNTER
+// ==================================================
+class PickupCounterPage extends StatelessWidget {
+  const PickupCounterPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF5D4037),
+      body: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 30),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(20, 10, 20, 40),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3E5E5),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 30),
+                    const Text(
+                      "Pickup counter",
+                      style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF5D4037)),
+                    ),
+                    const SizedBox(height: 20),
+                    // Table Header
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          Text("Food", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                          Text("Num counter", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                        ],
+                      ),
+                    ),
+                    const Divider(color: Colors.black, thickness: 1, indent: 20, endIndent: 20),
+                    
+                    // Items
+                    Expanded(
+                      child: ListView(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        children: [
+                          _counterItem("assets/images/bubble_waffle_hub.jpeg", "1"),
+                          const Divider(color: Colors.black26),
+                          _counterItem("https://images.unsplash.com/photo-1473093226795-af9932fe5856?q=80&w=200&auto=format&fit=crop", "3"),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _counterItem(String img, String counter) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: img.startsWith('assets/')
+                ? Image.asset(img, width: 80, height: 80, fit: BoxFit.cover)
+                : Image.network(img, width: 80, height: 80, fit: BoxFit.cover),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 40),
+            child: Text(counter, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 26)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+// ==================================================
+// MUKA: QUEUE PROGRESS SCREEN
+// ==================================================
+class QueueProgressPage extends StatelessWidget {
+  const QueueProgressPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFD2B48C), // Brownish background
+      body: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            // Header with Back Button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.black, size: 30),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+            
+            // Main Card
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(25, 10, 25, 40),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF9C4), // Cream color
+                  borderRadius: BorderRadius.circular(35),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _queueStep(
+                        icon: Icons.edit_note,
+                        title: "ORDER PLACED",
+                        subtitle: "Nadzha order on\n10.00 a.m",
+                        isFirst: true,
+                      ),
+                      _dottedLine(),
+                      _queueStep(
+                        icon: Icons.hourglass_empty,
+                        title: "PREPARING ORDER",
+                        subtitle: "Preparing order\non 10.00 a.m-\n10.30 a.m",
+                      ),
+                      _dottedLine(),
+                      _queueStep(
+                        icon: Icons.room_service, // Food dome/cloche
+                        title: "FOOD RESERVED",
+                        subtitle: "Est time 10.40 a.m",
+                        isLast: true,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: _customBottomNav(context, 1),
+    );
+  }
+
+  Widget _queueStep({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    bool isFirst = false,
+    bool isLast = false,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          children: [
+            Icon(icon, size: 55, color: Colors.black),
+          ],
+        ),
+        const SizedBox(width: 30),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 5),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Colors.orange,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                subtitle,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  color: Colors.black,
+                  height: 1.2,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _dottedLine() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 27), // Align with center of icon
+      child: Column(
+        children: List.generate(5, (index) {
+          return Container(
+            width: 2,
+            height: 10,
+            margin: const EdgeInsets.symmetric(vertical: 3),
+            color: Colors.black45,
+          );
+        }),
+      ),
+    );
+  }
+
+  Widget _customBottomNav(BuildContext context, int activeIndex) {
+    return Container(
+      height: 85,
+      decoration: const BoxDecoration(
+        color: Color(0xFFE5E0E0),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(45)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _navItem(Icons.home_outlined, "Home", activeIndex == 0, () {
+            Navigator.pushNamedAndRemoveUntil(context, "/dashboard", (route) => false);
+          }),
+          _navItem(Icons.group, "Queue", activeIndex == 1, () {}),
+          _navItem(Icons.notifications_none, "Notification", activeIndex == 2, () {}),
+        ],
+      ),
+    );
+  }
+
+  Widget _navItem(IconData icon, String label, bool isActive, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: isActive ? Colors.white : Colors.transparent,
+              shape: BoxShape.circle,
+              boxShadow: isActive ? [const BoxShadow(color: Colors.black12, blurRadius: 4)] : [],
+            ),
+            child: Icon(icon, color: Colors.black, size: 28),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+// ==================================================
+// MUKA: NOTIFICATION PAGE
+// ==================================================
+class NotificationPage extends StatelessWidget {
+  const NotificationPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFD2B48C), // Tan background
+      body: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 50),
+            // Header
+            Center(
+              child: const Text(
+                "NOTIFICATION",
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF5D4037),
+                ),
+              ),
+            ),
+            const SizedBox(height: 40),
+            
+            // Status Info Card
+            _gradientInfoBox([
+              "Current Status: In QUEUE / None",
+              "Last Visit: Cafeteria A",
+              "Total Queue: 8 min",
+            ]),
+            
+            const SizedBox(height: 80),
+            
+            // Completed Orders Card
+            _gradientInfoBox([
+              "Chicken Rice - Completed",
+              "Noodles - Completed",
+              "Burger - Completed",
+            ]),
+            
+            const Spacer(),
+          ],
+        ),
+      ),
+      bottomNavigationBar: _customBottomNav(context, 2),
+    );
+  }
+
+  Widget _gradientInfoBox(List<String> lines) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(horizontal: 25),
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        gradient: const LinearGradient(
+          colors: [Color(0xFF64B5F6), Color(0xFF81D4FA)], // Shades of blue
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: lines.map((line) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2),
+          child: Text(
+            line,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          ),
+        )).toList(),
+      ),
+    );
+  }
+
+  Widget _customBottomNav(BuildContext context, int activeIndex) {
+    return Container(
+      height: 85,
+      decoration: const BoxDecoration(
+        color: Color(0xFFE5E0E0),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(45)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _navItem(Icons.home_outlined, "Home", activeIndex == 0, () {
+            Navigator.pushNamedAndRemoveUntil(context, "/dashboard", (route) => false);
+          }),
+          _navItem(Icons.group_outlined, "Queue", activeIndex == 1, () {
+             Navigator.pushNamed(context, "/queue-progress");
+          }),
+          _navItem(Icons.notifications, "Notification", activeIndex == 2, () {}),
+        ],
+      ),
+    );
+  }
+
+  Widget _navItem(IconData icon, String label, bool isActive, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: isActive ? Colors.white : Colors.transparent,
+              shape: BoxShape.circle,
+              boxShadow: isActive ? [const BoxShadow(color: Colors.black12, blurRadius: 4)] : [],
+            ),
+            child: Icon(icon, color: Colors.black, size: 28),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
