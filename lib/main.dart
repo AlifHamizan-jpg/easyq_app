@@ -200,8 +200,16 @@ class WelcomePage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.sync, color: Colors.white, size: 50),
-                const Text('easyQ', style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+                Image.asset(
+                  'assets/images/Screenshot_2026-06-11_183356-removebg-preview.png',
+                  height: 150,
+                  errorBuilder: (context, error, stackTrace) => Column(
+                    children: [
+                      const Icon(Icons.sync, color: Colors.white, size: 50),
+                      const Text('easyQ', style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
                 const SizedBox(height: 50),
                 const Text('Welcome to\neasyQ', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 5),
@@ -247,8 +255,16 @@ class LoginPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.sync, color: Colors.white, size: 50),
-                const Text('easyQ', style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+                Image.asset(
+                  'assets/images/Screenshot_2026-06-11_183356-removebg-preview.png',
+                  height: 150,
+                  errorBuilder: (context, error, stackTrace) => Column(
+                    children: [
+                      const Icon(Icons.sync, color: Colors.white, size: 50),
+                      const Text('easyQ', style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
                 const SizedBox(height: 50),
                 const Text('Please continue with\nyour account', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 18)),
                 const SizedBox(height: 40),
@@ -376,8 +392,16 @@ class _LoginFormPageState extends State<LoginFormPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.sync, color: Colors.white, size: 50),
-                const Text('easyQ', style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+                Image.asset(
+                  'assets/images/Screenshot_2026-06-11_183356-removebg-preview.png',
+                  height: 100,
+                  errorBuilder: (context, error, stackTrace) => Column(
+                    children: [
+                      const Icon(Icons.sync, color: Colors.white, size: 50),
+                      const Text('easyQ', style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
                 const SizedBox(height: 40),
 
                 // Email/Username Field
@@ -633,12 +657,16 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    'REGISTER',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
+                  Image.asset(
+                    'assets/images/Screenshot_2026-06-11_183356-removebg-preview.png',
+                    height: 80,
+                    errorBuilder: (context, error, stackTrace) => const Text(
+                      'REGISTER',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 30),
@@ -1092,12 +1120,16 @@ class _DashboardPageState extends State<DashboardPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Find Your Cafe Shop\nanywhere',
-                    style: TextStyle(
-                      color: Color(0xFF6D4C41), // Adjusted to match the brown-ish tone in the image
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                  Image.asset(
+                    'assets/images/Screenshot_2026-06-11_183356-removebg-preview.png',
+                    height: 60,
+                    errorBuilder: (context, error, stackTrace) => const Text(
+                      'Find Your Cafe Shop\nanywhere',
+                      style: TextStyle(
+                        color: Color(0xFF6D4C41),
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   Row(
